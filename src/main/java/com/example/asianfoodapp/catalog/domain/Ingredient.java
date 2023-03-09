@@ -11,6 +11,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class Ingredient {
 
+    private Long id;
     private String name;
     private double amount;
     private String unit;

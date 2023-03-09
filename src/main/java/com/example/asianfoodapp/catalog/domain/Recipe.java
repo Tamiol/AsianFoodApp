@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 public class Recipe {
 
+    private Long id;
     private String name;
     private ArrayList<Ingredient> ingredients;
     private int readyInMinutes;
