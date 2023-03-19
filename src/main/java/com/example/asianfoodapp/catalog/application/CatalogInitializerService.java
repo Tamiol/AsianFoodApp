@@ -1,17 +1,10 @@
 package com.example.asianfoodapp.catalog.application;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogInitializerServiceUseCase;
-import com.fasterxml.jackson.core.JsonParser;
+import com.example.asianfoodapp.catalog.application.port.CatalogServiceUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import netscape.javascript.JSObject;
-import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,16 +13,18 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-import org.json.*;
+import static com.example.asianfoodapp.catalog.application.port.CatalogServiceUseCase.*;
 
 @RestController
 public class CatalogInitializerService implements CatalogInitializerServiceUseCase {
 
     private final RestTemplate restTemplate;
+    private final CatalogServiceUseCase catalog;
     @Value("${app.api-key}")
     private String API_KEY;
 
-    public CatalogInitializerService() {
+    public CatalogInitializerService(CatalogServiceUseCase catalog) {
+        this.catalog = catalog;
         restTemplate = new RestTemplate();
     }
 
@@ -63,9 +58,24 @@ public class CatalogInitializerService implements CatalogInitializerServiceUseCa
     }
 
     private void initRecipe(Long id) {
-        ResponseEntity<String> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/complexSearch" +
-                        "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=2",
-                String.class);
+        ResponseEntity<RecipeJson> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/{id}/information" +
+                        "&apiKey=" + API_KEY + "&includeNutrition=false",
+                RecipeJson.class,
+                id);
+
+        RecipeJson recipeJson = response.getBody();
+
+        //200 code
+        CreateRecipeCommand command = new CreateRecipeCommand(
+                recipeJson.getName(),
+                recipeJson.getReadyInMinutes(),
+                recipeJson.getInstructions(),
+                recipeJson.isVegetarian(),
+                recipeJson.isVegan(),
+                recipeJson.isGlutenFree()
+        );
+
+        catalog.addRecipe(command);
     }
 }
 

@@ -9,25 +9,27 @@ import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.http.HttpStatus;
 
-import javax.persistence.CascadeType;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-
 public interface CatalogInitializerServiceUseCase{
 
     @Value
     @JsonIgnoreProperties(ignoreUnknown = true)
     class RecipeJson {
-        @JsonProperty("name")
+        @JsonProperty("title")
         String name;
-        Set<Ingredient> ingredients = new HashSet<>();
+        //Set<Ingredient> ingredients = new HashSet<>();
+        @JsonProperty("readyInMinutes")
         int readyInMinutes;
+
+        @JsonProperty("sourceUrl")
         String instructions;
+
+        @JsonProperty("vegetarian")
         boolean vegetarian;
+
+        @JsonProperty("vegan")
         boolean vegan;
+
+        @JsonProperty("glutenFree")
         boolean glutenFree;
     }
 

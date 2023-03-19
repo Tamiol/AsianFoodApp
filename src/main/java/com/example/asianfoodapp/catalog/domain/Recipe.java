@@ -1,12 +1,9 @@
 package com.example.asianfoodapp.catalog.domain;
 
+import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
-import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 @Getter
@@ -14,6 +11,15 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 public class Recipe {
+
+    public Recipe(String name, int readyInMinutes, String instructions, boolean vegetarian, boolean vegan, boolean glutenFree) {
+        this.name = name;
+        this.readyInMinutes = readyInMinutes;
+        this.instructions = instructions;
+        this.vegetarian = vegetarian;
+        this.vegan = vegan;
+        this.glutenFree = glutenFree;
+    }
 
     @Id
     @GeneratedValue
