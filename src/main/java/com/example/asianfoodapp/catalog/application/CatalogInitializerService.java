@@ -1,7 +1,7 @@
 package com.example.asianfoodapp.catalog.application;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogInitializerServiceUseCase;
-import com.example.asianfoodapp.catalog.application.port.CatalogServiceUseCase;
+import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCase;
+import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,23 +13,23 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-import static com.example.asianfoodapp.catalog.application.port.CatalogServiceUseCase.*;
+import static com.example.asianfoodapp.catalog.application.port.CatalogUseCase.*;
 
 @RestController
-public class CatalogInitializerService implements CatalogInitializerServiceUseCase {
+public class CatalogInitializerService implements CatalogInitializerUseCase {
 
     private final RestTemplate restTemplate;
-    private final CatalogServiceUseCase catalog;
+    private final CatalogUseCase catalog;
     @Value("${app.api-key}")
     private String API_KEY;
 
-    public CatalogInitializerService(CatalogServiceUseCase catalog) {
+    public CatalogInitializerService(CatalogUseCase catalog) {
         this.catalog = catalog;
         restTemplate = new RestTemplate();
     }
 
     @GetMapping("/")
-    public String home() {
+    public void home() {
         ResponseEntity<String> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/complexSearch" +
                         "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=2",
                 String.class);
@@ -46,28 +46,28 @@ public class CatalogInitializerService implements CatalogInitializerServiceUseCa
 
         JsonNode resultsNode = jsonNode.get("results");
 
-        Set<Long> ids = new TreeSet<>();
+        Set<Long> ids = new HashSet<>();
         resultsNode.forEach(result ->
             ids.add(result.get("id").asLong())
         );
 
         // collect objects by ids
         ids.forEach(this::initRecipe);
-        return ids.toString();
-
     }
 
     private void initRecipe(Long id) {
-        ResponseEntity<RecipeJson> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/{id}/information" +
-                        "&apiKey=" + API_KEY + "&includeNutrition=false",
+        ResponseEntity<RecipeJson> response = restTemplate.getForEntity(
+                "https://api.spoonacular.com/recipes/{id}/information?includeNutrition=false&apiKey=" + API_KEY,
                 RecipeJson.class,
                 id);
 
         RecipeJson recipeJson = response.getBody();
 
+        assert recipeJson != null;
+
         //200 code
         CreateRecipeCommand command = new CreateRecipeCommand(
-                recipeJson.getName(),
+                recipeJson.getTitle(),
                 recipeJson.getReadyInMinutes(),
                 recipeJson.getInstructions(),
                 recipeJson.isVegetarian(),

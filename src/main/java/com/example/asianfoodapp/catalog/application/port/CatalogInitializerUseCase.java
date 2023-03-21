@@ -1,36 +1,35 @@
 package com.example.asianfoodapp.catalog.application.port;
 
-import com.example.asianfoodapp.catalog.application.CatalogInitializerService;
-import com.example.asianfoodapp.catalog.domain.Ingredient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Value;
+import lombok.Setter;
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.springframework.http.HttpStatus;
 
-public interface CatalogInitializerServiceUseCase{
+public interface CatalogInitializerUseCase {
 
-    @Value
+    @Getter
+    @Setter
     @JsonIgnoreProperties(ignoreUnknown = true)
     class RecipeJson {
         @JsonProperty("title")
-        String name;
+        private String title;
         //Set<Ingredient> ingredients = new HashSet<>();
         @JsonProperty("readyInMinutes")
-        int readyInMinutes;
+        private int readyInMinutes;
 
-        @JsonProperty("sourceUrl")
-        String instructions;
+        @JsonProperty("instructions")
+        private String instructions;
 
         @JsonProperty("vegetarian")
-        boolean vegetarian;
+        private boolean vegetarian;
 
         @JsonProperty("vegan")
-        boolean vegan;
+        private boolean vegan;
 
         @JsonProperty("glutenFree")
-        boolean glutenFree;
+        private boolean glutenFree;
     }
 
     @AllArgsConstructor

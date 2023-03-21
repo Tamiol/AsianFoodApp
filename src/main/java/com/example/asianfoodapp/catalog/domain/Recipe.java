@@ -2,6 +2,7 @@ package com.example.asianfoodapp.catalog.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -27,10 +28,12 @@ public class Recipe {
 
     private String name;
 
+    @CreatedDate
     private LocalDateTime createdAt;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Set<Ingredient> ingredients = new HashSet<>();
     private int readyInMinutes;
+    @Column(length = 2000)
     private String instructions;
     private boolean vegetarian;
     private boolean vegan;
