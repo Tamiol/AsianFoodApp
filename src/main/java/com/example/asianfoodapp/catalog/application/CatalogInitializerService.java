@@ -2,9 +2,15 @@ package com.example.asianfoodapp.catalog.application;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCase;
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
+import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,18 +26,20 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
     private final RestTemplate restTemplate;
     private final CatalogUseCase catalog;
+    private final IngredientJpaRepository ingredientJpaRepository;
     @Value("${app.api-key}")
     private String API_KEY;
 
-    public CatalogInitializerService(CatalogUseCase catalog) {
+    public CatalogInitializerService(CatalogUseCase catalog, IngredientJpaRepository ingredientJpaRepository) {
         this.catalog = catalog;
+        this.ingredientJpaRepository = ingredientJpaRepository;
         restTemplate = new RestTemplate();
     }
 
     @GetMapping("/")
-    public void home() {
+    public void initData() {
         ResponseEntity<String> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/complexSearch" +
-                        "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=2",
+                        "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=4",
                 String.class);
 
         // code response 200
@@ -56,28 +64,58 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     }
 
     private void initRecipe(Long id) {
-        ResponseEntity<RecipeJson> response = restTemplate.getForEntity(
+        ResponseEntity<String> response = restTemplate.getForEntity(
                 "https://api.spoonacular.com/recipes/{id}/information?includeNutrition=false&apiKey=" + API_KEY,
-                RecipeJson.class,
+                String.class,
                 id);
 
-        RecipeJson recipeJson = response.getBody();
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode node;
+        try {
+            node = mapper.readTree(response.getBody());
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        assert recipeJson != null;
+        // add ingredients
+        JsonNode ingredientsNodes;
+        try {
+            ingredientsNodes = mapper.readTree(response.getBody()).get("extendedIngredients");
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
 
-        //200 code
+        Set<Long> ingredients = new HashSet<>();
+        for (JsonNode ingNode : ingredientsNodes) {
+            IngredientCommand ingredient = IngredientCommand.builder()
+                    .name(ingNode.get("name").asText())
+                    .amount(ingNode.get("measures").get("metric").get("amount").asDouble())
+                    .unit(ingNode.get("measures").get("metric").get("unitLong").asText()).build();
+
+
+            ingredients.add(getOrCreateIngredient(ingredient).getId());
+        }
+
+        //200 code add book
         CreateRecipeCommand command = new CreateRecipeCommand(
-                recipeJson.getTitle(),
-                recipeJson.getReadyInMinutes(),
-                recipeJson.getInstructions(),
-                recipeJson.isVegetarian(),
-                recipeJson.isVegan(),
-                recipeJson.isGlutenFree()
+                node.get("title").asText(),
+                ingredients,
+                node.get("readyInMinutes").asInt(),
+                node.get("instructions").asText(),
+                node.get("vegetarian").asBoolean(),
+                node.get("vegan").asBoolean(),
+                node.get("glutenFree").asBoolean()
         );
 
         catalog.addRecipe(command);
     }
-}
 
-// information about
-// {{baseUrl}}/recipes/:id/information?includeNutrition=false&apiKey=002fc8cff38a4a65a0826b6a1c741d9d
+    private Ingredient getOrCreateIngredient(IngredientCommand ingredient ) {
+        return ingredientJpaRepository
+                .findByNameIgnoreCaseAndAmountAndUnit(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit())
+                .orElseGet(() -> ingredientJpaRepository.save(
+                        new Ingredient(ingredient.getName(),
+                                ingredient.getAmount(),
+                                ingredient.getUnit())));
+    }
+}

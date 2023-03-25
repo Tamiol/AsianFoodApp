@@ -1,5 +1,6 @@
 package com.example.asianfoodapp.catalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -11,6 +12,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString(exclude = "ingredients")
 public class Recipe {
 
     public Recipe(String name, int readyInMinutes, String instructions, boolean vegetarian, boolean vegan, boolean glutenFree) {
@@ -31,13 +33,26 @@ public class Recipe {
     @CreatedDate
     private LocalDateTime createdAt;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnoreProperties("recipes")
     private Set<Ingredient> ingredients = new HashSet<>();
     private int readyInMinutes;
-    @Column(length = 2000)
+    @Column(length = 5000)
     private String instructions;
     private boolean vegetarian;
     private boolean vegan;
     private boolean glutenFree;
+
+    public void addIngredient(Ingredient ingredient) {
+        Recipe self = this;
+        ingredients.add(ingredient);
+        ingredient.getRecipes().add(self);
+    }
+
+    public void removeIngredients() {
+        Recipe self = this;
+        ingredients.forEach(ingredient -> ingredient.getRecipes().remove(self));
+        ingredients.clear();
+    }
 
 }
 

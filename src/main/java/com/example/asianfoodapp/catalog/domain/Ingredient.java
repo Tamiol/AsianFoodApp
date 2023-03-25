@@ -1,9 +1,11 @@
 package com.example.asianfoodapp.catalog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +14,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
+@ToString(exclude = "recipes")
 public class Ingredient {
 
     @Id
@@ -21,6 +24,12 @@ public class Ingredient {
     private double amount;
     private String unit;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JsonIgnoreProperties("ingredients")
     private Set<Recipe> recipes = new HashSet<>();
 
+    public Ingredient(String name, double amount, String unit) {
+        this.name = name;
+        this.amount = amount;
+        this.unit = unit;
+    }
 }
