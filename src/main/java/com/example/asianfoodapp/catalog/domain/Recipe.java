@@ -15,7 +15,7 @@ import java.util.Set;
 @ToString(exclude = "ingredients")
 public class Recipe {
 
-    public Recipe(String name, int readyInMinutes, String instructions, boolean vegetarian, boolean vegan, boolean glutenFree) {
+    public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
         this.name = name;
         this.readyInMinutes = readyInMinutes;
         this.instructions = instructions;
@@ -35,12 +35,12 @@ public class Recipe {
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JsonIgnoreProperties("recipes")
     private Set<Ingredient> ingredients = new HashSet<>();
-    private int readyInMinutes;
+    private Integer readyInMinutes;
     @Column(length = 5000)
     private String instructions;
-    private boolean vegetarian;
-    private boolean vegan;
-    private boolean glutenFree;
+    private Boolean vegetarian;
+    private Boolean vegan;
+    private Boolean glutenFree;
 
     public void addIngredient(Ingredient ingredient) {
         Recipe self = this;
