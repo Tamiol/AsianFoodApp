@@ -13,10 +13,21 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @ToString(exclude = "ingredients")
+@Table(name = "recipe")
 public class Recipe {
 
     public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
         this.name = name;
+        this.readyInMinutes = readyInMinutes;
+        this.instructions = instructions;
+        this.vegetarian = vegetarian;
+        this.vegan = vegan;
+        this.glutenFree = glutenFree;
+    }
+
+    public Recipe(String name, Set<Ingredient> ingredients, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
+        this.name = name;
+        this.ingredients = ingredients;
         this.readyInMinutes = readyInMinutes;
         this.instructions = instructions;
         this.vegetarian = vegetarian;
@@ -33,6 +44,9 @@ public class Recipe {
     @CreatedDate
     private LocalDateTime createdAt;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "recipes_ingredients",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
     @JsonIgnoreProperties("recipes")
     private Set<Ingredient> ingredients = new HashSet<>();
     private Integer readyInMinutes;

@@ -1,5 +1,6 @@
 package com.example.asianfoodapp.catalog.application.port;
 
+import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import lombok.*;
 

@@ -15,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @ToString(exclude = "recipes")
+@Table(name = "ingredient")
 public class Ingredient {
 
     @Id
@@ -23,7 +24,7 @@ public class Ingredient {
     private String name;
     private double amount;
     private String unit;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST}, mappedBy = "ingredients")
     @JsonIgnoreProperties("ingredients")
     private Set<Recipe> recipes = new HashSet<>();
 
