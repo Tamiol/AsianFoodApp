@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -32,5 +33,18 @@ public class Ingredient {
         this.name = name;
         this.amount = amount;
         this.unit = unit;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingredient that = (Ingredient) o;
+        return Double.compare(that.amount, amount) == 0 && Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(unit, that.unit) && Objects.equals(recipes, that.recipes);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, amount, unit, recipes);
     }
 }

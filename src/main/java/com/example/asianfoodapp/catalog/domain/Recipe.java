@@ -7,6 +7,7 @@ import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 @Getter
 @Setter
@@ -68,5 +69,17 @@ public class Recipe {
         ingredients.clear();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(createdAt, recipe.createdAt) && Objects.equals(ingredients, recipe.ingredients) && Objects.equals(readyInMinutes, recipe.readyInMinutes) && Objects.equals(instructions, recipe.instructions) && Objects.equals(vegetarian, recipe.vegetarian) && Objects.equals(vegan, recipe.vegan) && Objects.equals(glutenFree, recipe.glutenFree);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, createdAt, ingredients, readyInMinutes, instructions, vegetarian, vegan, glutenFree);
+    }
 }
 

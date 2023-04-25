@@ -1,15 +1,20 @@
 package com.example.asianfoodapp.catalog.web;
 
-import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
+import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.CreateRecipeCommand;
+import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
+
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+import java.util.Set;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
@@ -17,17 +22,25 @@ import static org.junit.jupiter.api.Assertions.*;
 class CatalogControllerIT {
 
     @Autowired
+    CatalogUseCase catalog;
+
+    @Autowired
     CatalogController controller;
 
     @Autowired
-    RecipeJpaRepository repository;
+    IngredientJpaRepository ingredientRepository;
+
 
     @Test
-    void getAll() {
+    void getAllRecipes() {
         //given
         omeletteRecipy();
 
         //when
+        List<Recipe> recipeList = controller.getAll();
+
+        //then
+        assert
     }
 
 
@@ -40,8 +53,9 @@ class CatalogControllerIT {
     }
 
     private void omeletteRecipy() {
-        //Ingredient
-        //repository.add(new Recipe("omelette", ,40, "smash eggs onto pan", false, true, false))
+        Ingredient ingredient1 = new Ingredient("egg", 3, "");
+        Long id = ingredientRepository.save(ingredient1).getId();
+        catalog.addRecipe(new CreateRecipeCommand("omelette", Set.of(id),40, "smash eggs onto pan", false, true, false));
 
     }
 
