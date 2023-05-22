@@ -74,12 +74,12 @@ public class Recipe {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Recipe recipe = (Recipe) o;
-        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(createdAt, recipe.createdAt) && Objects.equals(ingredients, recipe.ingredients) && Objects.equals(readyInMinutes, recipe.readyInMinutes) && Objects.equals(instructions, recipe.instructions) && Objects.equals(vegetarian, recipe.vegetarian) && Objects.equals(vegan, recipe.vegan) && Objects.equals(glutenFree, recipe.glutenFree);
+        return Objects.equals(id, recipe.id) && Objects.equals(name, recipe.name) && Objects.equals(createdAt, recipe.createdAt) && Objects.equals(readyInMinutes, recipe.readyInMinutes) && Objects.equals(instructions, recipe.instructions) && Objects.equals(vegetarian, recipe.vegetarian) && Objects.equals(vegan, recipe.vegan) && Objects.equals(glutenFree, recipe.glutenFree);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, createdAt, ingredients, readyInMinutes, instructions, vegetarian, vegan, glutenFree);
+        return Objects.hash(id, name, createdAt, readyInMinutes, instructions, vegetarian, vegan, glutenFree);
     }
 }
 

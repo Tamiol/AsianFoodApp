@@ -9,6 +9,6 @@ services:
       MYSQL_PASSWORD: admin
       MYSQL_ROOT_PASSWORD: admin
     volumes:
-      - initial/init.sql
+      - /initial/init.sql
     ports:
       - 3306:3306
