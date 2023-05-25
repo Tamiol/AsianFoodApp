@@ -39,7 +39,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     @GetMapping("/")
     public void initData() {
         ResponseEntity<String> response = restTemplate.getForEntity("https://api.spoonacular.com/recipes/complexSearch" +
-                        "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=4",
+                        "?cuisine=asian&apiKey=" + API_KEY + "&offset=0&number=10",
                 String.class);
 
         // code response 200

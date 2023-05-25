@@ -1,9 +1,11 @@
 package com.example.asianfoodapp.catalog.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -15,6 +17,7 @@ import java.util.Set;
 @Entity
 @ToString(exclude = "ingredients")
 @Table(name = "recipe")
+@EntityListeners(AuditingEntityListener.class)
 public class Recipe {
 
     public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
@@ -40,9 +43,11 @@ public class Recipe {
     @GeneratedValue
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     @CreatedDate
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private LocalDateTime createdAt;
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     @JoinTable(name = "recipes_ingredients",
