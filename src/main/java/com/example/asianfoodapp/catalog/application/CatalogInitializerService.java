@@ -4,13 +4,10 @@ import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCa
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
 import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
+import com.example.asianfoodapp.catalog.domain.dto.IngredientCommandDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
-import static com.example.asianfoodapp.catalog.application.port.CatalogUseCase.*;
 
 @RestController
 public class CatalogInitializerService implements CatalogInitializerUseCase {
@@ -87,7 +83,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
         Set<Long> ingredients = new HashSet<>();
         for (JsonNode ingNode : ingredientsNodes) {
-            IngredientCommand ingredient = IngredientCommand.builder()
+            IngredientCommandDTO ingredient = IngredientCommandDTO.builder()
                     .name(ingNode.get("name").asText())
                     .amount(ingNode.get("measures").get("metric").get("amount").asDouble())
                     .unit(ingNode.get("measures").get("metric").get("unitLong").asText()).build();
@@ -97,20 +93,20 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
         }
 
         //200 code add book
-        CreateRecipeCommand command = new CreateRecipeCommand(
-                node.get("title").asText(),
-                ingredients,
-                node.get("readyInMinutes").asInt(),
-                node.get("instructions").asText(),
-                node.get("vegetarian").asBoolean(),
-                node.get("vegan").asBoolean(),
-                node.get("glutenFree").asBoolean()
-        );
-
-        catalog.addRecipe(command);
+//        CreateRecipeCommand command = new CreateRecipeCommand(
+//                node.get("title").asText(),
+//                ingredients,
+//                node.get("readyInMinutes").asInt(),
+//                node.get("instructions").asText(),
+//                node.get("vegetarian").asBoolean(),
+//                node.get("vegan").asBoolean(),
+//                node.get("glutenFree").asBoolean()
+//        );
+//
+//        catalog.addRecipe(command);
     }
 
-    private Ingredient getOrCreateIngredient(IngredientCommand ingredient ) {
+    private Ingredient getOrCreateIngredient(IngredientCommandDTO ingredient ) {
         return ingredientJpaRepository
                 .findByNameIgnoreCaseAndAmountAndUnit(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit())
                 .orElseGet(() -> ingredientJpaRepository.save(

@@ -1,17 +1,11 @@
 package com.example.asianfoodapp.catalog.web;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.CreateRecipeCommand;
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeCommand;
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeResponse;
 import com.example.asianfoodapp.catalog.domain.Recipe;
+import com.example.asianfoodapp.catalog.domain.dto.RestRecipeCommandDTO;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +14,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 @RequestMapping("/catalog")
 @RestController
@@ -44,7 +37,7 @@ public class CatalogController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeCommand command) {
+    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeCommandDTO command) {
         UpdateRecipeResponse response = catalog.updateRecipe(command.toUpdateCommand(id));
 
         if(!response.isSuccess()) {
@@ -55,7 +48,7 @@ public class CatalogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeCommand command) {
+    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeCommandDTO command) {
         Recipe recipe = catalog.addRecipe(command.toCreateCommand());
         URI uri = createRecipeUri(recipe);
         return ResponseEntity.created(uri).build();
@@ -69,42 +62,5 @@ public class CatalogController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteById(@PathVariable Long id) {
         catalog.removeById(id);
-    }
-
-
-    @Data
-    static class RestRecipeCommand {
-
-        @NotBlank
-        private String name;
-
-        @NotEmpty
-        private Set<Long> ingredients;
-
-        @NotNull
-        @Positive
-        private Integer readyInMinutes;
-
-        @NotBlank
-        private String instructions;
-
-        @NotNull
-        private Boolean vegetarian;
-
-        @NotNull
-        private Boolean vegan;
-
-        @NotNull
-        private Boolean glutenFree;
-
-        CreateRecipeCommand toCreateCommand() {
-            return new CreateRecipeCommand(this.name, this.ingredients, this.readyInMinutes, this.instructions,
-                    this.vegetarian, this.vegan, this.glutenFree);
-        }
-
-        UpdateRecipeCommand toUpdateCommand(Long id){
-            return new UpdateRecipeCommand(id, this.name, this.ingredients, this.readyInMinutes, this.instructions,
-                    this.vegetarian, this.vegan, this.glutenFree);
-        }
     }
 }

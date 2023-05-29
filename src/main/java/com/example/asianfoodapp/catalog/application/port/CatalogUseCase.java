@@ -2,6 +2,7 @@ package com.example.asianfoodapp.catalog.application.port;
 
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
+import com.example.asianfoodapp.catalog.domain.dto.IngredientCommandDTO;
 import lombok.*;
 
 import java.util.Collections;
@@ -25,7 +26,7 @@ public interface CatalogUseCase {
     @Value
     class CreateRecipeCommand {
     String name;
-    Set<Long> ingredients;
+    Set<IngredientCommandDTO> ingredients;
     Integer readyInMinutes;
     String instructions;
     Boolean vegetarian;
@@ -41,7 +42,7 @@ public interface CatalogUseCase {
     class UpdateRecipeCommand {
         Long id;
         String name;
-        Set<Long> ingredients;
+        Set<IngredientCommandDTO> ingredients;
         Integer readyInMinutes;
         String instructions;
         Boolean vegetarian;

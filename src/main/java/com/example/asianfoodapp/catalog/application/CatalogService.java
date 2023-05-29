@@ -1,10 +1,12 @@
 package com.example.asianfoodapp.catalog.application;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.application.port.IngredientUseCase;
 import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
 import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
+import com.example.asianfoodapp.catalog.domain.dto.IngredientCommandDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -61,9 +63,9 @@ public class CatalogService implements CatalogUseCase {
         if(command.getName() != null) {
             recipe.setName(command.getName());
         }
-        if(!command.getIngredients().isEmpty()) {
-            recipe.setReadyInMinutes(command.getReadyInMinutes());
-        }
+//        if(!command.getIngredients().isEmpty()) {
+//            recipe.setReadyInMinutes(command.getReadyInMinutes());
+//        }
         if(command.getReadyInMinutes() != null) {
             recipe.setReadyInMinutes(command.getReadyInMinutes());
         }
@@ -86,7 +88,7 @@ public class CatalogService implements CatalogUseCase {
     private Recipe toRecipe(CreateRecipeCommand command) {
         Recipe recipe = new Recipe(command.getName(), command.getReadyInMinutes(), command.getInstructions(),
                 command.getVegetarian(), command.getVegan(), command.getGlutenFree());
-        Set<Ingredient> ingredients = fetchIngredientsByIds(command.getIngredients());
+        Set<Ingredient> ingredients = collectIngredients(command.getIngredients());
         updateRecipe(recipe, ingredients);
         return recipe;
     }
@@ -96,11 +98,11 @@ public class CatalogService implements CatalogUseCase {
         ingredients.forEach(recipe::addIngredient);
     }
 
-    private Set<Ingredient> fetchIngredientsByIds(Set<Long> ingredients){
+    private Set<Ingredient> collectIngredients(Set<IngredientCommandDTO> ingredients){
         return ingredients
                 .stream()
-                .map(ingredientId -> ingredientJpaRepository.findById(ingredientId)
-                        .orElseThrow(() -> new IllegalArgumentException("Cannot find ingredient with id: " + ingredientId)))
+                .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit())
+                        .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit()))))
                 .collect(Collectors.toSet());
 
 
