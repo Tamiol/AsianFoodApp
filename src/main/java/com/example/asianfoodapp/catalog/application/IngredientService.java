@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-@Deprecated
 public class IngredientService implements IngredientUseCase {
 
     private final IngredientJpaRepository repository;

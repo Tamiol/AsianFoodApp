@@ -8,13 +8,5 @@ import lombok.Setter;
 
 public interface CatalogInitializerUseCase {
 
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @Builder
-    class IngredientCommand {
-        String name;
-        double amount;
-        String unit;
-    }
+
 }
