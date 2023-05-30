@@ -26,7 +26,7 @@ public interface CatalogUseCase {
     @Value
     class CreateRecipeCommand {
     String name;
-    Set<IngredientCommandDTO> ingredients;
+    Set<CreateIngredientCommand> ingredients;
     Integer readyInMinutes;
     String instructions;
     Boolean vegetarian;
@@ -48,6 +48,13 @@ public interface CatalogUseCase {
         Boolean vegetarian;
         Boolean vegan;
         Boolean glutenFree;
+    }
+
+    @Value
+    class CreateIngredientCommand {
+        String name;
+        double amount;
+        String unit;
     }
 
     @Value

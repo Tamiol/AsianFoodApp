@@ -1,5 +1,7 @@
 package com.example.asianfoodapp.catalog.domain.dto;
 
+import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.CreateIngredientCommand;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -20,4 +22,9 @@ public class IngredientCommandDTO {
 
     @NotNull
     private String unit;
+
+    public CreateIngredientCommand toCreateCommand() {
+        return new CreateIngredientCommand(this.name, this.amount, this.unit);
+
+    }
 }

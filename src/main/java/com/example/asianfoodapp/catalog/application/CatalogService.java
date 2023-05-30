@@ -93,18 +93,16 @@ public class CatalogService implements CatalogUseCase {
         return recipe;
     }
 
-    private void updateRecipe(Recipe recipe, Set<Ingredient> ingredients){
-        recipe.removeIngredients();
-        ingredients.forEach(recipe::addIngredient);
-    }
-
-    private Set<Ingredient> collectIngredients(Set<IngredientCommandDTO> ingredients){
+    private Set<Ingredient> collectIngredients(Set<CreateIngredientCommand> ingredients){
         return ingredients
                 .stream()
                 .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit())
                         .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit()))))
                 .collect(Collectors.toSet());
+    }
 
-
+    private void updateRecipe(Recipe recipe, Set<Ingredient> ingredients){
+        recipe.removeIngredients();
+        ingredients.forEach(recipe::addIngredient);
     }
 }
