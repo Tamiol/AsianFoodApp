@@ -3,7 +3,7 @@ package com.example.asianfoodapp.catalog.web;
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeResponse;
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.domain.dto.RestRecipeCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.RestRecipeDTO;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,7 +37,7 @@ public class CatalogController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeCommandDTO command) {
+    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeDTO command) {
         UpdateRecipeResponse response = catalog.updateRecipe(command.toUpdateCommand(id));
 
         if(!response.isSuccess()) {
@@ -48,7 +48,7 @@ public class CatalogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeCommandDTO command) {
+    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeDTO command) {
         Recipe recipe = catalog.addRecipe(command.toCreateCommand());
         URI uri = createRecipeUri(recipe);
         return ResponseEntity.created(uri).build();

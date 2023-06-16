@@ -1,8 +1,8 @@
 package com.example.asianfoodapp.catalog.application.port;
 
-import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.domain.dto.IngredientCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommand;
+import com.example.asianfoodapp.catalog.domain.dto.IngredientDTO;
 import lombok.*;
 
 import java.util.Collections;
@@ -23,18 +23,6 @@ public interface CatalogUseCase {
 
     UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command);
 
-    @Value
-    class CreateRecipeCommand {
-    String name;
-    Set<CreateIngredientCommand> ingredients;
-    Integer readyInMinutes;
-    String instructions;
-    Boolean vegetarian;
-    Boolean vegan;
-    Boolean glutenFree;
-
-    }
-
     @Getter
     @Setter
     @AllArgsConstructor
@@ -42,7 +30,7 @@ public interface CatalogUseCase {
     class UpdateRecipeCommand {
         Long id;
         String name;
-        Set<IngredientCommandDTO> ingredients;
+        Set<IngredientDTO> ingredients;
         Integer readyInMinutes;
         String instructions;
         Boolean vegetarian;
@@ -50,12 +38,7 @@ public interface CatalogUseCase {
         Boolean glutenFree;
     }
 
-    @Value
-    class CreateIngredientCommand {
-        String name;
-        double amount;
-        String unit;
-    }
+
 
     @Value
     class UpdateRecipeResponse {

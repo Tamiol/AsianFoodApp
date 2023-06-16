@@ -1,12 +1,12 @@
 package com.example.asianfoodapp.catalog.application;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.application.port.IngredientUseCase;
 import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
 import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.domain.dto.IngredientCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommand;
+import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommand;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -86,9 +86,10 @@ public class CatalogService implements CatalogUseCase {
     }
 
     private Recipe toRecipe(CreateRecipeCommand command) {
-        Recipe recipe = new Recipe(command.getName(), command.getReadyInMinutes(), command.getInstructions(),
-                command.getVegetarian(), command.getVegan(), command.getGlutenFree());
-        Set<Ingredient> ingredients = collectIngredients(command.getIngredients());
+        //TODO mapper
+        Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
+                command.vegetarian(), command.vegan(), command.glutenFree());
+        Set<Ingredient> ingredients = collectIngredients(command.ingredients());
         updateRecipe(recipe, ingredients);
         return recipe;
     }
@@ -96,8 +97,8 @@ public class CatalogService implements CatalogUseCase {
     private Set<Ingredient> collectIngredients(Set<CreateIngredientCommand> ingredients){
         return ingredients
                 .stream()
-                .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit())
-                        .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.getName(), ingredient.getAmount(), ingredient.getUnit()))))
+                .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.name(), ingredient.amount(), ingredient.unit())
+                        .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.name(), ingredient.amount(), ingredient.unit()))))
                 .collect(Collectors.toSet());
     }
 
