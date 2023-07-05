@@ -8,5 +8,5 @@ import lombok.Setter;
 
 public interface CatalogInitializerUseCase {
 
-
+    void fetchData(int offset, int number);
 }

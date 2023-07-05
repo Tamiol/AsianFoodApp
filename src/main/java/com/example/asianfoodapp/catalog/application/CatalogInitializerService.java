@@ -4,13 +4,14 @@ import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCa
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
 import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
-import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommand;
-import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommand;
+import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -21,7 +22,6 @@ import java.util.*;
 @RestController
 public class CatalogInitializerService implements CatalogInitializerUseCase {
 
-//    private final RestTemplate restTemplate;
     private final WebClient webClient;
     private final CatalogUseCase catalog;
     private final IngredientJpaRepository ingredientJpaRepository;
@@ -32,23 +32,24 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
     public CatalogInitializerService(CatalogUseCase catalog, IngredientJpaRepository ingredientJpaRepository, WebClient webclient) {
         this.catalog = catalog;
         this.ingredientJpaRepository = ingredientJpaRepository;
-        //restTemplate = new RestTemplate();
         this.webClient = webclient;
     }
 
-    @GetMapping("/")
-    public void initData() {
+    @Override
+    public void fetchData(int offset, int number) {
         var response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/complexSearch")
                         .queryParam("cuisine", "asian")
                         .queryParam("apiKey", API_KEY)
-                        .queryParam("offset", 0)
-                        .queryParam("number", 3)
+                        .queryParam("offset", offset)
+                        .queryParam("number", number)
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+
+        System.out.println(response);
 
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode;
@@ -96,18 +97,16 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
             throw new RuntimeException(e);
         }
 
-        Set<CreateIngredientCommand> ingredients = new HashSet<>();
+        Set<CreateIngredientCommandDTO> ingredients = new HashSet<>();
         for (JsonNode ingNode : ingredientsNodes) {
-            CreateIngredientCommand ingredient = new CreateIngredientCommand(
+            CreateIngredientCommandDTO ingredient = new CreateIngredientCommandDTO(
                     ingNode.get("name").asText(),
                     ingNode.get("measures").get("metric").get("amount").asDouble(),
                     ingNode.get("measures").get("metric").get("unitLong").asText());
-
-
             ingredients.add(ingredient);
         }
 
-        CreateRecipeCommand command = new CreateRecipeCommand(
+        CreateRecipeCommandDTO command = new CreateRecipeCommandDTO(
                 node.get("title").asText(),
                 ingredients,
                 node.get("readyInMinutes").asInt(),
@@ -120,7 +119,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
         catalog.addRecipe(command);
     }
 
-    private Ingredient getOrCreateIngredient(CreateIngredientCommand ingredient ) {
+    private Ingredient getOrCreateIngredient(CreateIngredientCommandDTO ingredient ) {
         return ingredientJpaRepository
                 .findByNameIgnoreCaseAndAmountAndUnit(ingredient.name(), ingredient.amount(), ingredient.unit())
                 .orElseGet(() -> ingredientJpaRepository.save(

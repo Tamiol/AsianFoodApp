@@ -1,8 +1,8 @@
 package com.example.asianfoodapp.catalog.application.port;
 
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommand;
-import com.example.asianfoodapp.catalog.domain.dto.IngredientDTO;
+import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.RestIngredientDTO;
 import lombok.*;
 
 import java.util.Collections;
@@ -15,9 +15,9 @@ public interface CatalogUseCase {
     List<Recipe> findAll();
 
     Optional<Recipe> findById(Long id);
-    Optional<Recipe> findOneByName(String name);
+    List<Recipe> findByName(String name);
 
-    Recipe addRecipe(CreateRecipeCommand command);
+    Recipe addRecipe(CreateRecipeCommandDTO command);
 
     void removeById(Long id);
 
@@ -30,7 +30,7 @@ public interface CatalogUseCase {
     class UpdateRecipeCommand {
         Long id;
         String name;
-        Set<IngredientDTO> ingredients;
+        Set<RestIngredientDTO> ingredients;
         Integer readyInMinutes;
         String instructions;
         Boolean vegetarian;

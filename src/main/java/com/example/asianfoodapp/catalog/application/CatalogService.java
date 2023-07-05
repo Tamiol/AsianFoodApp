@@ -5,8 +5,8 @@ import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
 import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommand;
-import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommand;
+import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
+import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -31,13 +31,16 @@ public class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public Optional<Recipe> findOneByName(String name) {
-        return Optional.empty();
+    public List<Recipe> findByName(String name) {
+        return repository.findAll()
+                .stream()
+                .filter(e -> e.getName().toLowerCase().contains(name.toLowerCase()))
+                .toList();
     }
 
 
     @Override
-    public Recipe addRecipe(CreateRecipeCommand command) {
+    public Recipe addRecipe(CreateRecipeCommandDTO command) {
         Recipe recipe = toRecipe(command);
         return repository.save(recipe);
     }
@@ -85,7 +88,7 @@ public class CatalogService implements CatalogUseCase {
         return recipe;
     }
 
-    private Recipe toRecipe(CreateRecipeCommand command) {
+    private Recipe toRecipe(CreateRecipeCommandDTO command) {
         //TODO mapper
         Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
                 command.vegetarian(), command.vegan(), command.glutenFree());
@@ -94,7 +97,7 @@ public class CatalogService implements CatalogUseCase {
         return recipe;
     }
 
-    private Set<Ingredient> collectIngredients(Set<CreateIngredientCommand> ingredients){
+    private Set<Ingredient> collectIngredients(Set<CreateIngredientCommandDTO> ingredients){
         return ingredients
                 .stream()
                 .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.name(), ingredient.amount(), ingredient.unit())

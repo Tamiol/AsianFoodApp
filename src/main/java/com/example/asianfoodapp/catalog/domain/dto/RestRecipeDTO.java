@@ -1,48 +1,35 @@
 package com.example.asianfoodapp.catalog.domain.dto;
 
 import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeCommand;
-import com.example.asianfoodapp.catalog.domain.mapper.RestRecipeDTOMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data
-@Component
-public class RestRecipeDTO {
+public record RestRecipeDTO(
+            @NotBlank
+            String name,
+            @NotEmpty
+            Set<RestIngredientDTO> ingredients,
+            @NotNull
+            @Positive
+            Integer readyInMinutes,
+            @NotBlank
+            String instructions,
+            @NotNull
+            Boolean vegetarian,
+            @NotNull
+            Boolean vegan,
+            @NotNull
+            Boolean glutenFree){
 
-    private final RestRecipeDTOMapper mapper;
-
-    @NotBlank
-    private String name;
-
-    @NotEmpty
-    private Set<IngredientDTO> ingredients;
-
-    @NotNull
-    @Positive
-    private Integer readyInMinutes;
-
-    @NotBlank
-    private String instructions;
-
-    @NotNull
-    private Boolean vegetarian;
-
-    @NotNull
-    private Boolean vegan;
-
-    @NotNull
-    private Boolean glutenFree;
-
-    public CreateRecipeCommand toCreateCommand() {
-        Set<CreateIngredientCommand> ingredientsCommand = this.ingredients.stream().map(IngredientDTO::toCreateCommand).collect(Collectors.toSet());
-        return new CreateRecipeCommand(this.name, ingredientsCommand, this.readyInMinutes, this.instructions,
+    //TODO zamienić to na mapper
+    public CreateRecipeCommandDTO toCreateCommand() {
+        Set<CreateIngredientCommandDTO> ingredientsCommand = this.ingredients.stream().map(RestIngredientDTO::toCreateCommand).collect(Collectors.toSet());
+        return new CreateRecipeCommandDTO(this.name, ingredientsCommand, this.readyInMinutes, this.instructions,
                 this.vegetarian, this.vegan, this.glutenFree);
     }
 

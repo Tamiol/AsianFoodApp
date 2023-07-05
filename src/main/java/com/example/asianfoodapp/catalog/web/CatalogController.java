@@ -14,6 +14,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/catalog")
 @RestController
@@ -24,7 +25,11 @@ public class CatalogController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<Recipe> getAll() {
+    public List<Recipe> getAll(@RequestParam Optional<String> name) {
+
+        if(name.isPresent()){
+            return catalog.findByName(name.get());
+        }
         return catalog.findAll();
     }
 
