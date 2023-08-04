@@ -1,10 +1,5 @@
 package com.example.asianfoodapp.catalog.application.port;
 
-import com.example.asianfoodapp.catalog.domain.Ingredient;
-
-import java.util.Optional;
-
+@Deprecated
 public interface IngredientUseCase {
-
-    Optional<Ingredient> findByNameAndAmountAndUnit (String name, double amount, String unit);
 }

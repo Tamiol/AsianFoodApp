@@ -17,7 +17,7 @@ public interface CatalogUseCase {
     Optional<Recipe> findById(Long id);
     List<Recipe> findByName(String name);
 
-    Recipe addRecipe(CreateRecipeCommandDTO command);
+    Optional<Recipe> addRecipe(CreateRecipeCommandDTO command);
 
     void removeById(Long id);
 
@@ -38,13 +38,7 @@ public interface CatalogUseCase {
         Boolean glutenFree;
     }
 
-
-
-    @Value
-    class UpdateRecipeResponse {
-        public static UpdateRecipeResponse SUCCESS = new UpdateRecipeResponse(true, Collections.emptyList());
-
-        boolean success;
-        List<String> errors;
+    record UpdateRecipeResponse(boolean success, List<String> errors) {
+        public static final UpdateRecipeResponse SUCCESS = new UpdateRecipeResponse(true, Collections.emptyList());
     }
 }

@@ -45,8 +45,8 @@ public class CatalogController {
     public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeDTO command) {
         UpdateRecipeResponse response = catalog.updateRecipe(command.toUpdateCommand(id));
 
-        if(!response.isSuccess()) {
-            String message = String.join(", ", response.getErrors());
+        if(!response.success()) {
+            String message = String.join(", ", response.errors());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
         }
     }
@@ -54,9 +54,14 @@ public class CatalogController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeDTO command) {
-        Recipe recipe = catalog.addRecipe(command.toCreateCommand());
-        URI uri = createRecipeUri(recipe);
-        return ResponseEntity.created(uri).build();
+        Optional<Recipe> response = catalog.addRecipe(command.toCreateCommand());
+
+        if(response.isPresent()){
+            URI uri = createRecipeUri(response.get());
+            return ResponseEntity.created(uri).build();
+        }
+
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Recipe with provided name: " + command.name() + "already exist");
     }
 
     private URI createRecipeUri(Recipe recipe) {

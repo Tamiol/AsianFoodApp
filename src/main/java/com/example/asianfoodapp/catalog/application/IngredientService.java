@@ -8,14 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
-@AllArgsConstructor
+@Deprecated
 public class IngredientService implements IngredientUseCase {
-
-    private final IngredientJpaRepository repository;
-
-    @Override
-    public Optional<Ingredient> findByNameAndAmountAndUnit (String name, double amount, String unit) {
-        return repository.findByNameIgnoreCaseAndAmountAndUnit(name, amount, unit);
-    }
 }

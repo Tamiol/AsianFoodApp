@@ -38,11 +38,37 @@ public class CatalogService implements CatalogUseCase {
                 .toList();
     }
 
-
     @Override
-    public Recipe addRecipe(CreateRecipeCommandDTO command) {
+    public Optional<Recipe> addRecipe(CreateRecipeCommandDTO command) {
+
+        String recipeName = command.name();
+        if(checkIfRecipeAlreadyExist(recipeName)) {
+            return Optional.empty();
+        }
+
         Recipe recipe = toRecipe(command);
-        return repository.save(recipe);
+        return Optional.of(repository.save(recipe));
+    }
+
+    private Recipe toRecipe(CreateRecipeCommandDTO command) {
+        //TODO mapper
+        Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
+                command.vegetarian(), command.vegan(), command.glutenFree());
+        Set<Ingredient> ingredients = collectIngredients(command.ingredients());
+        updateRecipe(recipe, ingredients);
+        return recipe;
+    }
+
+    private Set<Ingredient> collectIngredients(Set<CreateIngredientCommandDTO> ingredients){
+        return ingredients
+                .stream()
+                .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.name(), ingredient.amount(), ingredient.unit())
+                        .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.name(), ingredient.amount(), ingredient.unit()))))
+                .collect(Collectors.toSet());
+    }
+
+    private boolean checkIfRecipeAlreadyExist(String name) {
+        return findAll().stream().anyMatch(e -> e.getName().equalsIgnoreCase(name));
     }
 
     @Override
@@ -86,23 +112,6 @@ public class CatalogService implements CatalogUseCase {
         }
 
         return recipe;
-    }
-
-    private Recipe toRecipe(CreateRecipeCommandDTO command) {
-        //TODO mapper
-        Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
-                command.vegetarian(), command.vegan(), command.glutenFree());
-        Set<Ingredient> ingredients = collectIngredients(command.ingredients());
-        updateRecipe(recipe, ingredients);
-        return recipe;
-    }
-
-    private Set<Ingredient> collectIngredients(Set<CreateIngredientCommandDTO> ingredients){
-        return ingredients
-                .stream()
-                .map(ingredient -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(ingredient.name(), ingredient.amount(), ingredient.unit())
-                        .orElseGet(() -> ingredientJpaRepository.save(new Ingredient(ingredient.name(), ingredient.amount(), ingredient.unit()))))
-                .collect(Collectors.toSet());
     }
 
     private void updateRecipe(Recipe recipe, Set<Ingredient> ingredients){
