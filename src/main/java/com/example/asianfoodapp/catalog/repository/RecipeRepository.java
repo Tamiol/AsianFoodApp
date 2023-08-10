@@ -1,12 +1,11 @@
-package com.example.asianfoodapp.catalog.db;
+package com.example.asianfoodapp.catalog.repository;
 
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface RecipeJpaRepository extends JpaRepository<Recipe, Long> {
+public interface RecipeRepository extends JpaRepository<Recipe, Long> {
 
     List<Recipe> findAll();
 }

@@ -1,7 +1,7 @@
 package com.example.asianfoodapp.catalog.web;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeResponse;
+import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.services.port.CatalogUseCase.UpdateRecipeResponse;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.RestRecipeDTO;
 import jakarta.validation.Valid;

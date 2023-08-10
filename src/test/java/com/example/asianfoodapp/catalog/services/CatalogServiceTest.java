@@ -1,18 +1,16 @@
-package com.example.asianfoodapp.catalog.application;
+package com.example.asianfoodapp.catalog.services;
 
-import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
+import com.example.asianfoodapp.catalog.repository.RecipeRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @ExtendWith(MockitoExtension.class)
 class CatalogServiceTest {
 
     @Mock
-    private RecipeJpaRepository repository;
+    private RecipeRepository repository;
     private CatalogService service;
 
     @Test

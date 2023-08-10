@@ -1,6 +1,6 @@
 package com.example.asianfoodapp.catalog.web;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCase;
+import com.example.asianfoodapp.catalog.services.port.CatalogInitializerUseCase;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;

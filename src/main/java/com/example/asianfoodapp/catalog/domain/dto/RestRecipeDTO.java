@@ -1,6 +1,6 @@
 package com.example.asianfoodapp.catalog.domain.dto;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase.UpdateRecipeCommand;
+import com.example.asianfoodapp.catalog.services.port.CatalogUseCase.UpdateRecipeCommand;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -24,13 +24,15 @@ public record RestRecipeDTO(
             @NotNull
             Boolean vegan,
             @NotNull
-            Boolean glutenFree){
+            Boolean glutenFree,
+            @NotNull
+            String image){
 
     //TODO zamienić to na mapper
     public CreateRecipeCommandDTO toCreateCommand() {
         Set<CreateIngredientCommandDTO> ingredientsCommand = this.ingredients.stream().map(RestIngredientDTO::toCreateCommand).collect(Collectors.toSet());
         return new CreateRecipeCommandDTO(this.name, ingredientsCommand, this.readyInMinutes, this.instructions,
-                this.vegetarian, this.vegan, this.glutenFree);
+                this.vegetarian, this.vegan, this.glutenFree, this.image);
     }
 
     public UpdateRecipeCommand toUpdateCommand(Long id){

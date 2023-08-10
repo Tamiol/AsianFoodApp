@@ -1,4 +1,4 @@
-package com.example.asianfoodapp.catalog.application.port;
+package com.example.asianfoodapp.catalog.services.port;
 
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;

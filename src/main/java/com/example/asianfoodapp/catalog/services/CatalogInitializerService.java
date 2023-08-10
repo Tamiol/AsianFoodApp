@@ -1,10 +1,9 @@
-package com.example.asianfoodapp.catalog.application;
+package com.example.asianfoodapp.catalog.services;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogInitializerUseCase;
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
-import com.example.asianfoodapp.catalog.domain.dto.ApiFetchDataDTO;
-import com.example.asianfoodapp.catalog.domain.dto.ApiFetchRecipeDTO;
+import com.example.asianfoodapp.catalog.services.port.CatalogInitializerUseCase;
+import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.repository.IngredientRepository;
+import com.example.asianfoodapp.catalog.domain.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,12 +17,12 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
     private final WebClient webClient;
     private final CatalogUseCase catalog;
-    private final IngredientJpaRepository ingredientJpaRepository;
+    private final IngredientRepository ingredientJpaRepository;
     @Value("${app.api-key}")
     private String API_KEY;
 
     @Autowired
-    public CatalogInitializerService(CatalogUseCase catalog, IngredientJpaRepository ingredientJpaRepository, WebClient webclient) {
+    public CatalogInitializerService(CatalogUseCase catalog, IngredientRepository ingredientJpaRepository, WebClient webclient) {
         this.catalog = catalog;
         this.ingredientJpaRepository = ingredientJpaRepository;
         this.webClient = webclient;
@@ -63,27 +62,30 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
                 .bodyToMono(ApiFetchRecipeDTO.class)
                 .block();
 
-        System.out.println(response);
-//
-//        Set<CreateIngredientCommandDTO> ingredients = new HashSet<>();
-//        for (JsonNode ingNode : ingredientsNodes) {
-//            CreateIngredientCommandDTO ingredient = new CreateIngredientCommandDTO(
-//                    ingNode.get("name").asText(),
-//                    ingNode.get("measures").get("metric").get("amount").asDouble(),
-//                    ingNode.get("measures").get("metric").get("unitLong").asText());
-//            ingredients.add(ingredient);
-//        }
-//
-//        CreateRecipeCommandDTO command = new CreateRecipeCommandDTO(
-//                node.get("title").asText(),
-//                ingredients,
-//                node.get("readyInMinutes").asInt(),
-//                node.get("instructions").asText(),
-//                node.get("vegetarian").asBoolean(),
-//                node.get("vegan").asBoolean(),
-//                node.get("glutenFree").asBoolean()
-//        );
-//
-//        catalog.addRecipe(command);
+        CreateRecipeCommandDTO command = getRecipeFromApi(response);
+
+        catalog.addRecipe(command);
+    }
+
+    private CreateRecipeCommandDTO getRecipeFromApi(ApiFetchRecipeDTO response) {
+        Set<CreateIngredientCommandDTO> ingredients = new HashSet<>();
+        for (ApiFetchIngredientDTO recipe : response.extendedIngredients()) {
+            CreateIngredientCommandDTO ingredient = new CreateIngredientCommandDTO(
+                    recipe.name(),
+                    recipe.amount(),
+                    recipe.unit());
+            ingredients.add(ingredient);
+        }
+
+        return new CreateRecipeCommandDTO(
+                response.title(),
+                ingredients,
+                response.readyInMinutes(),
+                response.instructions(),
+                response.vegetarian(),
+                response.vegan(),
+                response.glutenFree(),
+                response.image()
+        );
     }
 }

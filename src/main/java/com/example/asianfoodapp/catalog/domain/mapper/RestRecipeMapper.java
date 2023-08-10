@@ -22,6 +22,8 @@ public class RestRecipeMapper implements Function<RestRecipeDTO, CreateRecipeCom
                 recipe.instructions(),
                 recipe.vegetarian(),
                 recipe.vegan(),
-                recipe.glutenFree());
+                recipe.glutenFree(),
+                recipe.image()
+        );
     }
 }

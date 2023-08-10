@@ -1,8 +1,8 @@
-package com.example.asianfoodapp.catalog.application;
+package com.example.asianfoodapp.catalog.services;
 
-import com.example.asianfoodapp.catalog.application.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.db.IngredientJpaRepository;
-import com.example.asianfoodapp.catalog.db.RecipeJpaRepository;
+import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
+import com.example.asianfoodapp.catalog.repository.IngredientRepository;
+import com.example.asianfoodapp.catalog.repository.RecipeRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CatalogService implements CatalogUseCase {
 
-    private final RecipeJpaRepository repository;
-    private final IngredientJpaRepository ingredientJpaRepository;
+    private final RecipeRepository repository;
+    private final IngredientRepository ingredientJpaRepository;
 
     @Override
     public List<Recipe> findAll() {
@@ -50,10 +50,13 @@ public class CatalogService implements CatalogUseCase {
         return Optional.of(repository.save(recipe));
     }
 
+    private boolean checkIfRecipeAlreadyExist(String name) {
+        return findAll().stream().anyMatch(e -> e.getName().equalsIgnoreCase(name));
+    }
+
     private Recipe toRecipe(CreateRecipeCommandDTO command) {
-        //TODO mapper
         Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
-                command.vegetarian(), command.vegan(), command.glutenFree());
+                command.vegetarian(), command.vegan(), command.glutenFree(), command.image());
         Set<Ingredient> ingredients = collectIngredients(command.ingredients());
         updateRecipe(recipe, ingredients);
         return recipe;
@@ -67,8 +70,9 @@ public class CatalogService implements CatalogUseCase {
                 .collect(Collectors.toSet());
     }
 
-    private boolean checkIfRecipeAlreadyExist(String name) {
-        return findAll().stream().anyMatch(e -> e.getName().equalsIgnoreCase(name));
+    private void updateRecipe(Recipe recipe, Set<Ingredient> ingredients){
+        recipe.removeIngredients();
+        ingredients.forEach(recipe::addIngredient);
     }
 
     @Override
@@ -112,10 +116,5 @@ public class CatalogService implements CatalogUseCase {
         }
 
         return recipe;
-    }
-
-    private void updateRecipe(Recipe recipe, Set<Ingredient> ingredients){
-        recipe.removeIngredients();
-        ingredients.forEach(recipe::addIngredient);
     }
 }

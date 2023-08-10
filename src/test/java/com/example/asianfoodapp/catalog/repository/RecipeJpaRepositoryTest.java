@@ -1,14 +1,10 @@
-package com.example.asianfoodapp.catalog.db;
+package com.example.asianfoodapp.catalog.repository;
 
 import com.example.asianfoodapp.BaseIT;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Set;
@@ -18,7 +14,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class RecipeJpaRepositoryTest extends BaseIT {
 
     @Autowired
-    private RecipeJpaRepository repository;
+    private RecipeRepository repository;
 
     @Test
     void itShouldFindAll() {

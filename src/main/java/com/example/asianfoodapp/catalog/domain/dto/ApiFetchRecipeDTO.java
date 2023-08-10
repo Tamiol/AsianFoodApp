@@ -8,6 +8,7 @@ public record ApiFetchRecipeDTO (boolean vegetarian,
                                  ArrayList<ApiFetchIngredientDTO> extendedIngredients,
                                  String title,
                                  int readyInMinutes,
-                                 String instructions){
+                                 String instructions,
+                                 String image){
 
 }

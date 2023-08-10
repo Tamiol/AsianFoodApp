@@ -20,6 +20,32 @@ import java.util.Set;
 @EntityListeners(AuditingEntityListener.class)
 public class Recipe {
 
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    @Column(unique = true)
+    private String name;
+
+    @CreatedDate
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private LocalDateTime createdAt;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
+    @JoinTable(name = "recipes_ingredients",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
+    @JsonIgnoreProperties("recipes")
+    private Set<Ingredient> ingredients = new HashSet<>();
+    private Integer readyInMinutes;
+    @Column(length = 5000)
+    private String instructions;
+    private Boolean vegetarian;
+    private Boolean vegan;
+    private Boolean glutenFree;
+    private String imageUrl;
+
+
     public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
         this.name = name;
         this.readyInMinutes = readyInMinutes;
@@ -39,28 +65,15 @@ public class Recipe {
         this.glutenFree = glutenFree;
     }
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    @Column(unique = true)
-    private String name;
-
-    @CreatedDate
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private LocalDateTime createdAt;
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST})
-    @JoinTable(name = "recipes_ingredients",
-            joinColumns = @JoinColumn(name = "recipe_id"),
-            inverseJoinColumns = @JoinColumn(name = "ingredient_id"))
-    @JsonIgnoreProperties("recipes")
-    private Set<Ingredient> ingredients = new HashSet<>();
-    private Integer readyInMinutes;
-    @Column(length = 5000)
-    private String instructions;
-    private Boolean vegetarian;
-    private Boolean vegan;
-    private Boolean glutenFree;
+    public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree, String imageUrl) {
+        this.name = name;
+        this.readyInMinutes = readyInMinutes;
+        this.instructions = instructions;
+        this.vegetarian = vegetarian;
+        this.vegan = vegan;
+        this.glutenFree = glutenFree;
+        this.imageUrl = imageUrl;
+    }
 
     public void addIngredient(Ingredient ingredient) {
         Recipe self = this;
