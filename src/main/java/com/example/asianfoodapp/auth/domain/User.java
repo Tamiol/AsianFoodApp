@@ -29,7 +29,9 @@ public class User implements UserDetails {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(name = "islock")
     private boolean isLock = false;
+    @Column(name = "isenabled")
     private boolean isEnabled = false;
 
     public User(String uuid, String login, String email, String password, Role role) {
@@ -42,7 +44,7 @@ public class User implements UserDetails {
     }
 
     public User() {
-        setUuid(UUID.randomUUID().toString());
+        generateUuid();
     }
 
     @Override
