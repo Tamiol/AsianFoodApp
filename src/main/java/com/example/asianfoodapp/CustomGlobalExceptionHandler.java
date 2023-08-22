@@ -1,5 +1,7 @@
 package com.example.asianfoodapp;
 
+import com.example.asianfoodapp.auth.exceptions.UserEmailAlreadyExistsException;
+import com.example.asianfoodapp.auth.exceptions.UsernameAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -8,10 +10,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ControllerAdvice
@@ -32,6 +31,16 @@ public class CustomGlobalExceptionHandler {
     @ExceptionHandler(WebClientResponseException.class)
     public ResponseEntity handleWebClientException(WebClientResponseException ex){
         return handleError(HttpStatus.BAD_REQUEST, List.of(ex.getResponseBodyAsString()));
+    }
+
+    @ExceptionHandler(UsernameAlreadyExistsException.class)
+    public ResponseEntity handleUsernameAlreadyExistsException(UsernameAlreadyExistsException ex){
+        return handleError(HttpStatus.BAD_REQUEST, Collections.singletonList(ex.getMessage()));
+    }
+
+    @ExceptionHandler(UserEmailAlreadyExistsException.class)
+    public ResponseEntity handleUserEmailAlreadyExistsException(UserEmailAlreadyExistsException ex){
+        return handleError(HttpStatus.BAD_REQUEST, Collections.singletonList(ex.getMessage()));
     }
 
     private static ResponseEntity<Object> handleError(HttpStatus status, List<String> errors) {

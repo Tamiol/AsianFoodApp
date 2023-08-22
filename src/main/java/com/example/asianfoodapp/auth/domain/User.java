@@ -1,6 +1,7 @@
 package com.example.asianfoodapp.auth.domain;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,12 +23,14 @@ public class User implements UserDetails {
     private String uuid;
     @Column(unique = true, nullable = false)
     private String login;
+    @Getter
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Getter
     private Role role;
     @Column(name = "islock")
     private boolean isLock = false;
@@ -64,7 +67,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
     @Override
@@ -85,4 +88,5 @@ public class User implements UserDetails {
     private void generateUuid() {
         setUuid(UUID.randomUUID().toString());
     }
+
 }

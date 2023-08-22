@@ -20,11 +20,11 @@ public class SecurityConfiguration {
                         .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated()
                 )
-//                .formLogin((form) -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-//                )
-//                .logout((logout) -> logout.permitAll())
+                .formLogin((form) -> form
+                        .loginPage("/login")
+                        .permitAll()
+                )
+                .logout((logout) -> logout.permitAll())
                 .csrf(csrf -> csrf.disable())
                 .cors(Customizer.withDefaults());
 
