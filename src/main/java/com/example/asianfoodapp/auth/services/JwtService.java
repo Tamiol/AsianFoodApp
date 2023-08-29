@@ -5,13 +5,15 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.core.Authentication;
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class JwtService {
@@ -39,7 +41,7 @@ public class JwtService {
 
 
     public void validateToken(final String token) throws ExpiredJwtException, IllegalArgumentException {
-        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJwt(token);
+        Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
     private Key getSignKey() {
@@ -47,11 +49,11 @@ public class JwtService {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    private String getSubject(final String token) {
+    public String getSubject(final String token) { // Pobierz nazwę użytkownika z tokenu
         return Jwts
                 .parser()
                 .setSigningKey(SECRET)
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }

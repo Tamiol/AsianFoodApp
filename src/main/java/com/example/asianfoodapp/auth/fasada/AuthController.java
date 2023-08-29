@@ -3,6 +3,7 @@ package com.example.asianfoodapp.auth.fasada;
 import com.example.asianfoodapp.auth.domain.AuthResponse;
 import com.example.asianfoodapp.auth.domain.Code;
 import com.example.asianfoodapp.auth.domain.User;
+import com.example.asianfoodapp.auth.domain.dto.UserLoginDTO;
 import com.example.asianfoodapp.auth.domain.dto.UserRegisterDTO;
 import com.example.asianfoodapp.auth.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -27,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody User user, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody UserLoginDTO user, HttpServletResponse response) {
         return userService.login(user, response);
     }
 

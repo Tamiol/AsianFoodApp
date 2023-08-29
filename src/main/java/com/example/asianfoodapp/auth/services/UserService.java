@@ -4,6 +4,7 @@ import com.example.asianfoodapp.auth.domain.AuthResponse;
 import com.example.asianfoodapp.auth.domain.Code;
 import com.example.asianfoodapp.auth.domain.Role;
 import com.example.asianfoodapp.auth.domain.User;
+import com.example.asianfoodapp.auth.domain.dto.UserLoginDTO;
 import com.example.asianfoodapp.auth.domain.dto.UserRegisterDTO;
 import com.example.asianfoodapp.auth.exceptions.UserEmailAlreadyExistsException;
 import com.example.asianfoodapp.auth.exceptions.UsernameAlreadyExistsException;
@@ -60,23 +61,18 @@ public class UserService {
         user.setLogin(userRegisterDTO.getLogin());
         user.setPassword(userRegisterDTO.getPassword());
         user.setEmail(userRegisterDTO.getEmail());
+        user.setRole(Role.USER);
 
-        if(userRegisterDTO.getRole() == null) {
-            user.setRole(Role.USER);
-        }
-        else {
-            user.setRole(userRegisterDTO.getRole());
-        }
         saveUser(user);
     }
 
-    public ResponseEntity<?> login(User authRequest, HttpServletResponse response) {
-        User user = userRepository.findUserByLogin(authRequest.getUsername()).orElse(null);
+    public ResponseEntity<?> login(UserLoginDTO authRequest, HttpServletResponse response) {
+        User user = userRepository.findUserByLogin(authRequest.getLogin()).orElse(null);
         if (user != null){
-            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+            Authentication authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getLogin(), authRequest.getPassword()));
             if(authenticate.isAuthenticated()){
-                Cookie cookie = cookieService.generateCookie("token", generateToken(authRequest.getUsername(), exp), exp);
-                Cookie refresh = cookieService.generateCookie("refresh", generateToken(authRequest.getUsername(), refreshExp), refreshExp);
+                Cookie cookie = cookieService.generateCookie("token", generateToken(authRequest.getLogin(), exp), exp);
+                Cookie refresh = cookieService.generateCookie("refresh", generateToken(authRequest.getLogin(), refreshExp), refreshExp);
                 response.addCookie(cookie);
                 response.addCookie(refresh);
                 return ResponseEntity.ok(

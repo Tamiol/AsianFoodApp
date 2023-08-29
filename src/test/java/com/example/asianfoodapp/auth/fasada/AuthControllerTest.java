@@ -2,6 +2,7 @@ package com.example.asianfoodapp.auth.fasada;
 
 import com.example.asianfoodapp.auth.domain.AuthResponse;
 import com.example.asianfoodapp.auth.domain.Role;
+import com.example.asianfoodapp.auth.domain.User;
 import com.example.asianfoodapp.auth.domain.dto.UserRegisterDTO;
 import com.example.asianfoodapp.auth.services.UserService;
 import org.junit.Assert;
@@ -29,13 +30,13 @@ class AuthControllerTest {
     }
 
     @Test
-    public void testAddNewUser() {
+    public void UserRegisterAndLogin() {
         //given
         UserRegisterDTO userRegisterDTO = UserRegisterDTO
                 .builder()
                 .login("Admin")
                 .password("Admin33!")
-                .role(Role.ADMIN)
+                .role(Role.USER)
                 .build();
 
         //when
@@ -44,23 +45,32 @@ class AuthControllerTest {
         //then
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertEquals("Operation end success", response.getBody().getMessage());
+//
+//        //try to login
+//        //given
+//        User user = response.
+//
+//        //when
+//        ResponseEntity<?> loginResponse = authController.login(re);
+
+
     }
 
-    @Test
-    public void tryCreateUserWithTooShortPassword() {
-        //given
-        UserRegisterDTO userRegisterDTO = UserRegisterDTO
-                .builder()
-                .login("User")
-                .password("123")
-                .role(Role.USER)
-                .build();
-
-        //when
-        ResponseEntity<AuthResponse> response = authController.addNewUser(userRegisterDTO);
-
-        //then
-
-        System.out.println(response);
-    }
+//    @Test
+//    public void User () {
+//        //given
+//        UserRegisterDTO userRegisterDTO = UserRegisterDTO
+//                .builder()
+//                .login("User")
+//                .password("123")
+//                .role(Role.USER)
+//                .build();
+//
+//        //when
+//        ResponseEntity<AuthResponse> response = authController.addNewUser(userRegisterDTO);
+//
+//        //then
+//
+//        System.out.println(response);
+//    }
 }
