@@ -1,5 +1,6 @@
 package com.example.asianfoodapp.catalog.domain;
 
+import com.example.asianfoodapp.auth.domain.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
@@ -44,6 +45,10 @@ public class Recipe {
     private Boolean vegan;
     private Boolean glutenFree;
     private String imageUrl;
+    @ManyToOne
+    @JsonIgnoreProperties("recipes")
+    private User author;
+
 
 
     public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree) {
@@ -65,7 +70,7 @@ public class Recipe {
         this.glutenFree = glutenFree;
     }
 
-    public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree, String imageUrl) {
+    public Recipe(String name, Integer readyInMinutes, String instructions, Boolean vegetarian, Boolean vegan, Boolean glutenFree, String imageUrl, User author) {
         this.name = name;
         this.readyInMinutes = readyInMinutes;
         this.instructions = instructions;
@@ -73,6 +78,7 @@ public class Recipe {
         this.vegan = vegan;
         this.glutenFree = glutenFree;
         this.imageUrl = imageUrl;
+        this.author = author;
     }
 
     public void addIngredient(Ingredient ingredient) {

@@ -11,7 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
+import org.springframework.security.core.Authentication;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -53,8 +53,8 @@ public class CatalogController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeDTO command) {
-        Optional<Recipe> response = catalog.addRecipe(command.toCreateCommand());
+    public ResponseEntity<?> addRecipe(@Valid @RequestBody RestRecipeDTO command, Authentication authentication) {
+        Optional<Recipe> response = catalog.addRecipe(command.toCreateCommand(), authentication.getName());
 
         if(response.isPresent()){
             URI uri = createRecipeUri(response.get());

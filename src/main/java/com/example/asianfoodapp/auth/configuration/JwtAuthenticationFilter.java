@@ -2,7 +2,6 @@ package com.example.asianfoodapp.auth.configuration;
 
 import com.example.asianfoodapp.auth.services.CookieService;
 import com.example.asianfoodapp.auth.services.JwtService;
-import com.example.asianfoodapp.auth.services.UserService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.io.IOException;
 import jakarta.servlet.FilterChain;
@@ -31,7 +30,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private int exp;
     @Value("${jwt.refresh.exp}")
     private int refreshExp;
-
     @Override
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
 

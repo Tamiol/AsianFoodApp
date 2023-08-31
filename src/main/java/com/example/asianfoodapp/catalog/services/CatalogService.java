@@ -1,5 +1,7 @@
 package com.example.asianfoodapp.catalog.services;
 
+import com.example.asianfoodapp.auth.domain.User;
+import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
 import com.example.asianfoodapp.catalog.repository.IngredientRepository;
 import com.example.asianfoodapp.catalog.repository.RecipeRepository;
@@ -8,6 +10,8 @@ import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
 import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -19,6 +23,7 @@ public class CatalogService implements CatalogUseCase {
 
     private final RecipeRepository repository;
     private final IngredientRepository ingredientJpaRepository;
+    private final UserRepository userRepository;
 
     @Override
     public List<Recipe> findAll() {
@@ -39,14 +44,16 @@ public class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public Optional<Recipe> addRecipe(CreateRecipeCommandDTO command) {
+    public Optional<Recipe> addRecipe(CreateRecipeCommandDTO command, String username) {
+        Optional<User> user = userRepository.findUserByLogin(username);
+        if(user.isEmpty()) throw new UsernameNotFoundException("User not found");
 
         String recipeName = command.name();
         if(checkIfRecipeAlreadyExist(recipeName)) {
             return Optional.empty();
         }
 
-        Recipe recipe = toRecipe(command);
+        Recipe recipe = toRecipe(command, user.get());
         return Optional.of(repository.save(recipe));
     }
 
@@ -54,9 +61,9 @@ public class CatalogService implements CatalogUseCase {
         return findAll().stream().anyMatch(e -> e.getName().equalsIgnoreCase(name));
     }
 
-    private Recipe toRecipe(CreateRecipeCommandDTO command) {
+    private Recipe toRecipe(CreateRecipeCommandDTO command, User user) {
         Recipe recipe = new Recipe(command.name(), command.readyInMinutes(), command.instructions(),
-                command.vegetarian(), command.vegan(), command.glutenFree(), command.image());
+                command.vegetarian(), command.vegan(), command.glutenFree(), command.image(), user);
         Set<Ingredient> ingredients = collectIngredients(command.ingredients());
         updateRecipe(recipe, ingredients);
         return recipe;

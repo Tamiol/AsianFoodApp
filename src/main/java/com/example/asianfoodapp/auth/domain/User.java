@@ -1,5 +1,7 @@
 package com.example.asianfoodapp.auth.domain;
 
+import com.example.asianfoodapp.catalog.domain.Recipe;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -7,9 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Setter
@@ -36,6 +36,9 @@ public class User implements UserDetails {
     private boolean isLock = false;
     @Column(name = "isenabled")
     private boolean isEnabled = false;
+    @OneToMany
+    @JsonIgnoreProperties("author")
+    private Set<Recipe> recipes = new HashSet<>();
 
     public User(String uuid, String login, String email, String password, Role role) {
         this.uuid = uuid;

@@ -1,11 +1,14 @@
 package com.example.asianfoodapp.catalog.services;
 
+import com.example.asianfoodapp.auth.domain.User;
+import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.services.port.CatalogInitializerUseCase;
 import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
 import com.example.asianfoodapp.catalog.repository.IngredientRepository;
 import com.example.asianfoodapp.catalog.domain.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -17,19 +20,24 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
     private final WebClient webClient;
     private final CatalogUseCase catalog;
+    private final UserRepository userRepository;
     private final IngredientRepository ingredientJpaRepository;
     @Value("${app.api-key}")
     private String API_KEY;
 
+    private final String USERNAME = "Admin";
+
     @Autowired
-    public CatalogInitializerService(CatalogUseCase catalog, IngredientRepository ingredientJpaRepository, WebClient webclient) {
+    public CatalogInitializerService(CatalogUseCase catalog, IngredientRepository ingredientJpaRepository, WebClient webclient, UserRepository userRepository) {
         this.catalog = catalog;
         this.ingredientJpaRepository = ingredientJpaRepository;
         this.webClient = webclient;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void fetchData(int offset, int number) {
+
         var response = webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path("/complexSearch")
@@ -64,7 +72,7 @@ public class CatalogInitializerService implements CatalogInitializerUseCase {
 
         CreateRecipeCommandDTO command = getRecipeFromApi(response);
 
-        catalog.addRecipe(command);
+        catalog.addRecipe(command, this.USERNAME);
     }
 
     private CreateRecipeCommandDTO getRecipeFromApi(ApiFetchRecipeDTO response) {

@@ -4,6 +4,7 @@ import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
 import com.example.asianfoodapp.catalog.domain.dto.RestIngredientDTO;
 import lombok.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,7 @@ public interface CatalogUseCase {
     Optional<Recipe> findById(Long id);
     List<Recipe> findByName(String name);
 
-    Optional<Recipe> addRecipe(CreateRecipeCommandDTO command);
+    Optional<Recipe> addRecipe(CreateRecipeCommandDTO command, String username);
 
     void removeById(Long id);
 
