@@ -1,18 +1,17 @@
 package com.example.asianfoodapp.catalog.services;
 
-import com.example.asianfoodapp.auth.domain.User;
 import com.example.asianfoodapp.auth.repository.UserRepository;
+import com.example.asianfoodapp.catalog.domain.dto.*;
+import com.example.asianfoodapp.catalog.repository.IngredientRepository;
 import com.example.asianfoodapp.catalog.services.port.CatalogInitializerUseCase;
 import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
-import com.example.asianfoodapp.catalog.repository.IngredientRepository;
-import com.example.asianfoodapp.catalog.domain.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.Set;
 
 
 @RestController

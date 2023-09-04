@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         try {
             validateToken(request, response);
-        } catch (IllegalArgumentException | ExpiredJwtException e) {
+        } catch (IllegalArgumentException | ExpiredJwtException | NullPointerException e) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -22,7 +22,7 @@ public interface CatalogUseCase {
 
     void removeById(Long id);
 
-    UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command);
+    UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command, String username);
 
     @Getter
     @Setter

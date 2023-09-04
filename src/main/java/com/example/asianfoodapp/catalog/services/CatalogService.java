@@ -1,5 +1,7 @@
 package com.example.asianfoodapp.catalog.services;
 
+import com.example.asianfoodapp.auth.configuration.CustomUserDetailsService;
+import com.example.asianfoodapp.auth.domain.Role;
 import com.example.asianfoodapp.auth.domain.User;
 import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.services.port.CatalogUseCase;
@@ -9,8 +11,10 @@ import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
 import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +28,7 @@ public class CatalogService implements CatalogUseCase {
     private final RecipeRepository repository;
     private final IngredientRepository ingredientJpaRepository;
     private final UserRepository userRepository;
+    private final CustomUserDetailsService userDetailsService;
 
     @Override
     public List<Recipe> findAll() {
@@ -43,6 +48,7 @@ public class CatalogService implements CatalogUseCase {
                 .toList();
     }
 
+    @Transactional
     @Override
     public Optional<Recipe> addRecipe(CreateRecipeCommandDTO command, String username) {
         Optional<User> user = userRepository.findUserByLogin(username);
@@ -87,15 +93,22 @@ public class CatalogService implements CatalogUseCase {
         repository.deleteById(id);
     }
 
+    @Transactional
     @Override
-    public UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command) {
-        return repository.findById(command.getId())
-                .map(recipe -> {
-                    Recipe updateRecipe = updateFields(recipe, command);
-                    repository.save(updateRecipe);
-                    return UpdateRecipeResponse.SUCCESS;
-                })
-                .orElseGet(() -> new UpdateRecipeResponse(false, List.of("Unable to find a recipe with id: " + command.getId())));
+    public UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command, String username) {
+        var user = userDetailsService.loadUserByUsername(username);
+
+        Optional<Recipe> recipeData = repository.findById(command.getId());
+        if (recipeData.isPresent()) {
+            Recipe recipe = recipeData.get();
+
+            if (recipe.getAuthor().getUsername().equals(username) || user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+                Recipe updateRecipe = updateFields(recipe, command);
+                repository.save(updateRecipe);
+                return UpdateRecipeResponse.SUCCESS;
+            } else return new UpdateRecipeResponse(false, List.of("You are not the owner of this recipe"));
+        }
+        return new UpdateRecipeResponse(false, List.of("Unable to find a recipe with id: " + command.getId()));
     }
 
     private Recipe updateFields(Recipe recipe, UpdateRecipeCommand command) {

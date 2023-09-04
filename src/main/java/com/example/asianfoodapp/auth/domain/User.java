@@ -35,7 +35,7 @@ public class User implements UserDetails {
     @Column(name = "islock")
     private boolean isLock = false;
     @Column(name = "isenabled")
-    private boolean isEnabled = false;
+    private boolean isEnabled = true;
     @OneToMany
     @JsonIgnoreProperties("author")
     private Set<Recipe> recipes = new HashSet<>();

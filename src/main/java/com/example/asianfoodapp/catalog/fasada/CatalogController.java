@@ -42,8 +42,8 @@ public class CatalogController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeDTO command) {
-        UpdateRecipeResponse response = catalog.updateRecipe(command.toUpdateCommand(id));
+    public void updateRecipe(@PathVariable Long id, @RequestBody RestRecipeDTO command, Authentication authentication) {
+        UpdateRecipeResponse response = catalog.updateRecipe(command.toUpdateCommand(id), authentication.getName());
 
         if(!response.success()) {
             String message = String.join(", ", response.errors());
