@@ -1,15 +1,13 @@
 package com.example.asianfoodapp.catalog.services;
 
 import com.example.asianfoodapp.BaseIT;
-import com.example.asianfoodapp.catalog.repository.IngredientRepository;
 import com.example.asianfoodapp.catalog.repository.RecipeRepository;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.util.UriBuilder;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 class CatalogInitializerServiceTest extends BaseIT {
@@ -1507,6 +1505,6 @@ class CatalogInitializerServiceTest extends BaseIT {
         catalogInitializerService.fetchData(0, 2);
 
         //then
-        Assertions.assertEquals(2,repository.findAll().size());
+        assertThat(repository.findAll()).hasSize(2);
     }
 }

@@ -22,7 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+import jakarta.servlet.http.Cookie;
 import java.util.Arrays;
 
 @Service
@@ -112,5 +112,18 @@ public class UserService {
             response.addCookie(cookie);
             response.addCookie(refreshCookie);
         }
+    }
+
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        Cookie cookie = cookieService.removeCookie(request.getCookies(), "token");
+        if(cookie != null) {
+            response.addCookie(cookie);
+        }
+        Cookie refreshCookie = cookieService.removeCookie(request.getCookies(), "refresh");
+        if(cookie != null) {
+            response.addCookie(refreshCookie);
+        }
+
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 }

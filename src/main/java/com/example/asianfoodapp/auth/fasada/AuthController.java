@@ -32,6 +32,11 @@ public class AuthController {
         return userService.login(user, response);
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        return userService.logout(request, response);
+    }
+
     @GetMapping("/validate")
     public ResponseEntity<AuthResponse> validateToken(HttpServletRequest request, HttpServletResponse response) {
         try {
