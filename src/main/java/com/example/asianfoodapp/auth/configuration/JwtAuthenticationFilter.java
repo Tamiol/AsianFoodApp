@@ -1,6 +1,5 @@
 package com.example.asianfoodapp.auth.configuration;
 
-import com.example.asianfoodapp.auth.services.CookieService;
 import com.example.asianfoodapp.auth.services.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.io.IOException;
@@ -10,13 +9,11 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -25,11 +22,6 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final CookieService cookieService;
-    @Value("${jwt.exp}")
-    private int exp;
-    @Value("${jwt.refresh.exp}")
-    private int refreshExp;
     @Override
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
 
@@ -74,10 +66,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             jwtService.validateToken(token);
         }catch (IllegalArgumentException | ExpiredJwtException e) {
             jwtService.validateToken(refresh);
-            Cookie refreshCookie = cookieService.generateCookie("token", jwtService.refreshToken(refresh, refreshExp), refreshExp);
-            Cookie cookie = cookieService.generateCookie("token", jwtService.refreshToken(refresh, exp), exp);
-            response.addCookie(cookie);
-            response.addCookie(refreshCookie);
         }
     }
 

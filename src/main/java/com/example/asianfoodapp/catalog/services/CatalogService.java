@@ -116,9 +116,28 @@ public class CatalogService implements CatalogUseCase {
         if(command.getName() != null) {
             recipe.setName(command.getName());
         }
-//        if(!command.getIngredients().isEmpty()) {
-//            recipe.setReadyInMinutes(command.getReadyInMinutes());
-//        }
+        if(command.getIngredients() != null) {
+            var recipeIngredients = new HashSet<>(recipe.getIngredients());
+            var commandRecipeIngredients = command.getIngredients();
+            recipe.removeIngredients();
+
+            if(!commandRecipeIngredients.isEmpty()) {
+                Set<Ingredient> ingredients = command.getIngredients()
+                        .stream()
+                        .map(e -> ingredientJpaRepository.findByNameIgnoreCaseAndAmountAndUnit(e.name(), e.amount(), e.unit())
+                                .orElse(new Ingredient(e.name(), e.amount(), e.unit())))
+                        .collect(Collectors.toSet());
+
+                recipe.setIngredients(ingredients);
+            }
+
+            var ingredientsIdToDelete = recipeIngredients
+                    .stream()
+                    .filter(e -> e.getRecipes().isEmpty())
+                    .map(e -> e.getId())
+                    .collect(Collectors.toSet());
+            ingredientJpaRepository.deleteAllById(ingredientsIdToDelete);
+        }
         if(command.getReadyInMinutes() != null) {
             recipe.setReadyInMinutes(command.getReadyInMinutes());
         }
@@ -134,7 +153,9 @@ public class CatalogService implements CatalogUseCase {
         if(command.getGlutenFree() != null) {
             recipe.setGlutenFree(command.getGlutenFree());
         }
-
+        if(command.getImageUrl() != null) {
+            recipe.setImageUrl(command.getImageUrl());
+        }
         return recipe;
     }
 }

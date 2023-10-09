@@ -37,6 +37,6 @@ public record RestRecipeDTO(
 
     public UpdateRecipeCommand toUpdateCommand(Long id){
         return new UpdateRecipeCommand(id, this.name, this.ingredients, this.readyInMinutes, this.instructions,
-                this.vegetarian, this.vegan, this.glutenFree);
+                this.vegetarian, this.vegan, this.glutenFree, this.image);
     }
 }

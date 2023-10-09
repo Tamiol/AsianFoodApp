@@ -37,6 +37,7 @@ public interface CatalogUseCase {
         Boolean vegetarian;
         Boolean vegan;
         Boolean glutenFree;
+        String imageUrl;
     }
 
     record UpdateRecipeResponse(boolean success, List<String> errors) {

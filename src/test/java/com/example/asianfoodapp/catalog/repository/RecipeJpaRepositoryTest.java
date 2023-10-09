@@ -5,10 +5,8 @@ import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
 import java.util.Set;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class RecipeJpaRepositoryTest extends BaseIT {
@@ -17,14 +15,14 @@ class RecipeJpaRepositoryTest extends BaseIT {
     private RecipeRepository repository;
 
     @Test
-    void itShouldFindAll() {
+    void shouldFindAll() {
         //given
-        Ingredient ingredient = new Ingredient("ingredient1", 3.4, "unit");
+        Ingredient ingredient = new Ingredient("egg", 3, "");
         Recipe recipe = new Recipe(
-                "recipe1",
+                "omelette",
                 Set.of(ingredient),
                 40,
-                "instruction",
+                "description",
                 true,
                 false,
                 false

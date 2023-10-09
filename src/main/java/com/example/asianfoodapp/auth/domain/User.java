@@ -40,8 +40,7 @@ public class User implements UserDetails {
     @JsonIgnoreProperties("author")
     private Set<Recipe> recipes = new HashSet<>();
 
-    public User(String uuid, String login, String email, String password, Role role) {
-        this.uuid = uuid;
+    public User(String login, String email, String password, Role role) {
         this.login = login;
         this.email = email;
         this.password = password;
