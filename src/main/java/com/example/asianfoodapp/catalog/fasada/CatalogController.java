@@ -61,7 +61,7 @@ public class CatalogController {
             return ResponseEntity.created(uri).build();
         }
 
-        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Recipe with provided name: " + command.name() + "already exist");
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Recipe with provided name: " + command.name() + " already exist");
     }
 
     private URI createRecipeUri(Recipe recipe) {

@@ -23,8 +23,6 @@ public class BaseIT {
     @Autowired
     public MockMvc mockMvc;
 
-    public ObjectMapper objectMapper;
-
     public static final String WIRE_MOCK_HOST = "http://localhost";
 
     @Container

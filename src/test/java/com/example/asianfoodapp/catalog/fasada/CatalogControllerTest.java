@@ -1,15 +1,16 @@
 package com.example.asianfoodapp.catalog.fasada;
 
+import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
-import com.example.asianfoodapp.catalog.repository.IngredientRepository;
 import com.example.asianfoodapp.catalog.repository.RecipeRepository;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -20,7 +21,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(CatalogController.class)
+@AutoConfigureMockMvc
+@SpringBootTest
 class CatalogControllerTest {
 
     @Autowired
@@ -28,10 +30,11 @@ class CatalogControllerTest {
 
     @MockBean
     RecipeRepository recipeRepository;
-    @MockBean
-    IngredientRepository ingredientRepository;
 
-    ObjectMapper objectMapper;
+    @MockBean
+    UserRepository userRepository;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     void shouldFindAllRecipes() throws Exception {
@@ -44,8 +47,11 @@ class CatalogControllerTest {
         Mockito.when(recipeRepository.findAll()).thenReturn(recipes);
 
         //then
-        mockMvc.perform(get("/catalog"))
+        mockMvc.perform(get("/catalog")
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpectAll(status().isOk(),
                         content().json(objectMapper.writeValueAsString(recipes)));
     }
+
+
 }
