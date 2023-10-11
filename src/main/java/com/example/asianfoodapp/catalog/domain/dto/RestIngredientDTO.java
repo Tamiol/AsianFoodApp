@@ -13,7 +13,6 @@ public record RestIngredientDTO(
         Double amount,
         @NotNull String unit){
 
-    //TODO zamienić to na mapper
     public CreateIngredientCommandDTO toCreateCommand() {
         return new CreateIngredientCommandDTO(this.name, this.amount, this.unit);
 

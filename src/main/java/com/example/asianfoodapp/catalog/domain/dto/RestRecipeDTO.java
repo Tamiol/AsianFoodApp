@@ -28,7 +28,6 @@ public record RestRecipeDTO(
             @NotNull
             String image){
 
-    //TODO zamienić to na mapper
     public CreateRecipeCommandDTO toCreateCommand() {
         Set<CreateIngredientCommandDTO> ingredientsCommand = this.ingredients.stream().map(RestIngredientDTO::toCreateCommand).collect(Collectors.toSet());
         return new CreateRecipeCommandDTO(this.name, ingredientsCommand, this.readyInMinutes, this.instructions,

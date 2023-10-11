@@ -20,7 +20,7 @@ public interface CatalogUseCase {
 
     Optional<Recipe> addRecipe(CreateRecipeCommandDTO command, String username);
 
-    void removeById(Long id);
+    boolean removeById(Long id, String username);
 
     UpdateRecipeResponse updateRecipe(UpdateRecipeCommand command, String username);
 

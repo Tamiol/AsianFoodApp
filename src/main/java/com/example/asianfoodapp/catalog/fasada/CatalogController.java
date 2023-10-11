@@ -70,7 +70,10 @@ public class CatalogController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteById(@PathVariable Long id) {
-        catalog.removeById(id);
+    public void deleteById(@PathVariable Long id, Authentication authentication) {
+        var response = catalog.removeById(id, authentication.getName());
+        if (!response) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You do not have permission to delete recipe with id: " + id);
+        }
     }
 }

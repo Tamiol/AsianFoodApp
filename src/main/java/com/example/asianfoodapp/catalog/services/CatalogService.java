@@ -13,10 +13,13 @@ import com.example.asianfoodapp.catalog.domain.dto.CreateIngredientCommandDTO;
 import com.example.asianfoodapp.catalog.domain.dto.CreateRecipeCommandDTO;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import org.webjars.NotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -89,8 +92,16 @@ public class CatalogService implements CatalogUseCase {
     }
 
     @Override
-    public void removeById(Long id) {
-        repository.deleteById(id);
+    public boolean removeById(Long id, String username) {
+        var user = userDetailsService.loadUserByUsername(username);
+        var recipe = findById(id)
+                .orElseThrow(() -> new NotFoundException("Recipe not found"));
+
+        if (recipe.getAuthor().getUsername().equals(username) || user.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
+            repository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 
     @Transactional
