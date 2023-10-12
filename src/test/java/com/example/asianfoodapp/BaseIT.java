@@ -8,10 +8,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.containers.MySQLContainer;
+import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
@@ -26,9 +25,9 @@ public class BaseIT {
     public static final String WIRE_MOCK_HOST = "http://localhost";
 
     @Container
-    private static MySQLContainer<?> mySQLContainer = new MySQLContainer<>("mysql:8.0.29")
+    private static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:15.2-alpine")
             .withDatabaseName("asianfood")
-            .withUsername("root")
+            .withUsername("admin")
             .withPassword("admin");
 
     @RegisterExtension
@@ -37,9 +36,9 @@ public class BaseIT {
             .build();
     @DynamicPropertySource
     public static void containerConfig(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", mySQLContainer::getJdbcUrl);
-        registry.add("spring.datasource.username", mySQLContainer::getUsername);
-        registry.add("spring.datasource.password", mySQLContainer::getPassword);
+        registry.add("spring.datasource.url", postgreSQLContainer::getJdbcUrl);
+        registry.add("spring.datasource.username", postgreSQLContainer::getUsername);
+        registry.add("spring.datasource.password", postgreSQLContainer::getPassword);
         registry.add("offer.http.client.config.uri", () -> WIRE_MOCK_HOST + ":" + wireMockServer.getPort());
     }
 }

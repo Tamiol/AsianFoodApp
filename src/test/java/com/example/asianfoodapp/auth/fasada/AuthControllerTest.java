@@ -45,7 +45,8 @@ class AuthControllerTest {
         //then
         assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
         assertEquals("Operation end success", response.getBody().getMessage());
-//
+
+
 //        //try to login
 //        //given
 //        User user = response.
