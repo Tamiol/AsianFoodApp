@@ -1,77 +1,68 @@
 package com.example.asianfoodapp.auth.fasada;
 
-import com.example.asianfoodapp.auth.domain.AuthResponse;
+import com.example.asianfoodapp.BaseIT;
 import com.example.asianfoodapp.auth.domain.Role;
-import com.example.asianfoodapp.auth.domain.User;
+import com.example.asianfoodapp.auth.domain.dto.UserLoginDTO;
 import com.example.asianfoodapp.auth.domain.dto.UserRegisterDTO;
-import com.example.asianfoodapp.auth.services.UserService;
-import org.junit.Assert;
-import org.junit.jupiter.api.BeforeEach;
+import com.example.asianfoodapp.auth.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class AuthControllerTest {
+@AutoConfigureMockMvc
+@SpringBootTest
+class AuthControllerTest extends BaseIT {
 
-    @Mock
-    private UserService userService;
+    @Autowired
+    MockMvc mockMvc;
 
-    @InjectMocks
-    private AuthController authController;
+    @Autowired
+    UserRepository userRepository;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
-    public void UserRegisterAndLogin() {
+    public void UserRegisterAndLogin() throws Exception {
         //given
+        var userLogin = "Admin1";
+        var userPassword = "Admin33!";
         UserRegisterDTO userRegisterDTO = UserRegisterDTO
                 .builder()
-                .login("Admin")
-                .password("Admin33!")
+                .login(userLogin)
+                .password(userPassword)
+                .email("email@gmail.com")
                 .role(Role.USER)
                 .build();
 
-        //when
-        ResponseEntity<AuthResponse> response = authController.addNewUser(userRegisterDTO);
-
-        //then
-        assertThat(response.getStatusCode().is2xxSuccessful()).isTrue();
-        assertEquals("Operation end success", response.getBody().getMessage());
-
-
-//        //try to login
-//        //given
-//        User user = response.
-//
-//        //when
-//        ResponseEntity<?> loginResponse = authController.login(re);
+        //when & then
+        mockMvc.perform(post("/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userRegisterDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Operation end success"));
+        assertThat(userRepository.findUserByLogin(userLogin)).isNotEmpty();
 
 
+        //try to log in
+        //given
+        UserLoginDTO userLoginDTO = new UserLoginDTO(userLogin, userPassword);
+
+        //when & then
+        mockMvc.perform(post("/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(userLoginDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value(userLogin))
+                .andExpect(cookie().value("token", notNullValue()))
+                .andExpect(cookie().value("refresh", notNullValue()));
     }
-
-//    @Test
-//    public void User () {
-//        //given
-//        UserRegisterDTO userRegisterDTO = UserRegisterDTO
-//                .builder()
-//                .login("User")
-//                .password("123")
-//                .role(Role.USER)
-//                .build();
-//
-//        //when
-//        ResponseEntity<AuthResponse> response = authController.addNewUser(userRegisterDTO);
-//
-//        //then
-//
-//        System.out.println(response);
-//    }
 }
