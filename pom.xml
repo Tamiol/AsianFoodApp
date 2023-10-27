@@ -15,6 +15,18 @@
     <description>AsianFoodApp</description>
     <properties>
         <java.version>21</java.version>
+        <projectlombok.version>1.18.30</projectlombok.version>
+        <testcontainers.version>1.18.3</testcontainers.version>
+        <testcontainers.junit-jupiter.version>1.18.3</testcontainers.junit-jupiter.version>
+        <testcontainers.version>1.18.3</testcontainers.version>
+        <postgresql.version>42.6.0</postgresql.version>
+        <hibernate.validator.version>7.0.1.Final</hibernate.validator.version>
+        <springdoc.version>2.0.2</springdoc.version>
+        <reactor-spring.version>1.0.1.RELEASE</reactor-spring.version>
+        <wiremock-jre8-standalone.version>2.35.0</wiremock-jre8-standalone.version>
+        <jsonwebtoken.jjwt-api.version>0.11.5</jsonwebtoken.jjwt-api.version>
+        <jsonwebtoken.jjwt-impl.version>0.11.5</jsonwebtoken.jjwt-impl.version>
+        <jsonwebtoken.jjwt-jackson.version>0.11.5</jsonwebtoken.jjwt-jackson.version>
     </properties>
     <dependencies>
         <dependency>
@@ -24,7 +36,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
+            <version>${projectlombok.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -48,30 +60,30 @@
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.18.3</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.18.3</version>
+            <version>${testcontainers.junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.18.3</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.1.Final</version>
+            <version>${hibernate.validator.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,7 +92,7 @@
         <dependency>
             <groupId>org.springdoc</groupId>
             <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+            <version>${springdoc.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -98,28 +110,28 @@
         <dependency>
             <groupId>org.projectreactor</groupId>
             <artifactId>reactor-spring</artifactId>
-            <version>1.0.1.RELEASE</version>
+            <version>${reactor-spring.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.tomakehurst</groupId>
             <artifactId>wiremock-jre8-standalone</artifactId>
-            <version>2.35.0</version>
+            <version>${wiremock-jre8-standalone.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.jjwt-api.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.jjwt-impl.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
+            <version>${jsonwebtoken.jjwt-jackson.version}</version>
         </dependency>
     </dependencies>
     <build>
