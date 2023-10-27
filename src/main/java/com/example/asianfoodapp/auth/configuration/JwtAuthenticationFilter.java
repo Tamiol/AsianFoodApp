@@ -24,15 +24,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     @Override
     protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain filterChain) throws ServletException, IOException, java.io.IOException {
-
+        String token;
         try {
-            validateToken(request, response);
+            token = validateToken(request);
         } catch (IllegalArgumentException | ExpiredJwtException | NullPointerException e) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = extractToken(request);
         if(token == null) {
             filterChain.doFilter(request, response);
             return;
@@ -42,17 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    private String extractToken(HttpServletRequest request) {
-        String token = null;
-        for(Cookie value: Arrays.stream(request.getCookies()).toList()) {
-            if(value.getName().equals("token")) {
-                token = value.getValue();
-            }
-        }
-        return token;
-    }
-
-    public void validateToken(HttpServletRequest request, HttpServletResponse response) throws ExpiredJwtException, IllegalArgumentException {
+    public String validateToken(HttpServletRequest request) throws ExpiredJwtException, IllegalArgumentException {
         String token = null;
         String refresh = null;
         for(Cookie value: Arrays.stream(request.getCookies()).toList()) {
@@ -64,8 +53,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
         try {
             jwtService.validateToken(token);
+            return token;
         }catch (IllegalArgumentException | ExpiredJwtException e) {
             jwtService.validateToken(refresh);
+            return refresh;
         }
     }
 
