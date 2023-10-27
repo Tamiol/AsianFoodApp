@@ -5,10 +5,13 @@ import com.example.asianfoodapp.catalog.domain.Ingredient;
 import com.example.asianfoodapp.catalog.domain.Recipe;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
+
 import java.util.List;
 import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class RecipeJpaRepositoryTest extends BaseIT {
 
     @Autowired

@@ -15,6 +15,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import java.util.Optional;
 import java.util.Set;
@@ -40,31 +42,33 @@ public class CatalogAddRecipeTest {
     @MockBean
     CatalogUseCase catalog;
 
+    private ObjectWriter objectMapper = new ObjectMapper().writer().withDefaultPrettyPrinter();
+
     @Test
     @WithMockUser(username = "user", password ="12345678", roles = "USER")
     void loggedUserAddRecipe() throws Exception {
         //given
         var ingredientDTO = new RestIngredientDTO("egg", 3d, "");
         var recipeDTO = new RestRecipeDTO("omelette", Set.of(ingredientDTO),40, "description", true, false, false, "www.zdj.pl");
-        String requestBody = STR."""
-                {
-                    "name":"\{recipeDTO.name()}",
-                    "ingredients":
-                        [
-                            {
-                            "name":"\{ingredientDTO.name()}",
-                            "amount":\{ingredientDTO.amount()},
-                            "unit":"\{ingredientDTO.unit()}"
-                            }
-                        ],
-                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
-                    "instructions": "\{recipeDTO.instructions()}",
-                    "vegetarian": \{recipeDTO.vegetarian()},
-                    "vegan": \{recipeDTO.vegan()},
-                    "glutenFree": \{recipeDTO.glutenFree()},
-                    "image": "\{recipeDTO.image()}"
-                }
-                """;
+//        String requestBody = STR."""
+//                {
+//                    "name":"\{recipeDTO.name()}",
+//                    "ingredients":
+//                        [
+//                            {
+//                            "name":"\{ingredientDTO.name()}",
+//                            "amount":\{ingredientDTO.amount()},
+//                            "unit":"\{ingredientDTO.unit()}"
+//                            }
+//                        ],
+//                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
+//                    "instructions": "\{recipeDTO.instructions()}",
+//                    "vegetarian": \{recipeDTO.vegetarian()},
+//                    "vegan": \{recipeDTO.vegan()},
+//                    "glutenFree": \{recipeDTO.glutenFree()},
+//                    "image": "\{recipeDTO.image()}"
+//                }
+//                """;
         var recipeResponse = new Recipe();
         recipeResponse.setId(1L);
 
@@ -75,7 +79,7 @@ public class CatalogAddRecipeTest {
         //then
         mockMvc.perform(post("/catalog")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .content(objectMapper.writeValueAsString(recipeDTO))
                 )
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", containsString("/catalog/1")));
@@ -86,25 +90,25 @@ public class CatalogAddRecipeTest {
         //given
         var ingredientDTO = new RestIngredientDTO("egg", 3d, "");
         var recipeDTO = new RestRecipeDTO("omelette", Set.of(ingredientDTO),40, "description", true, false, false, "www.zdj.pl");
-        String requestBody = STR."""
-                {
-                    "name":"\{recipeDTO.name()}",
-                    "ingredients":
-                        [
-                            {
-                            "name":"\{ingredientDTO.name()}",
-                            "amount":\{ingredientDTO.amount()},
-                            "unit":"\{ingredientDTO.unit()}"
-                            }
-                        ],
-                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
-                    "instructions": "\{recipeDTO.instructions()}",
-                    "vegetarian": \{recipeDTO.vegetarian()},
-                    "vegan": \{recipeDTO.vegan()},
-                    "glutenFree": \{recipeDTO.glutenFree()},
-                    "image": "\{recipeDTO.image()}"
-                }
-                """;
+//        String requestBody = STR."""
+//                {
+//                    "name":"\{recipeDTO.name()}",
+//                    "ingredients":
+//                        [
+//                            {
+//                            "name":"\{ingredientDTO.name()}",
+//                            "amount":\{ingredientDTO.amount()},
+//                            "unit":"\{ingredientDTO.unit()}"
+//                            }
+//                        ],
+//                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
+//                    "instructions": "\{recipeDTO.instructions()}",
+//                    "vegetarian": \{recipeDTO.vegetarian()},
+//                    "vegan": \{recipeDTO.vegan()},
+//                    "glutenFree": \{recipeDTO.glutenFree()},
+//                    "image": "\{recipeDTO.image()}"
+//                }
+//                """;
         var recipeResponse = new Recipe();
         recipeResponse.setId(1L);
 
@@ -113,7 +117,7 @@ public class CatalogAddRecipeTest {
         //then
         mockMvc.perform(post("/catalog")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .content(objectMapper.writeValueAsString(recipeDTO))
                 )
                 .andExpect(status().isForbidden());
     }
@@ -124,25 +128,25 @@ public class CatalogAddRecipeTest {
         //given
         var ingredientDTO = new RestIngredientDTO("egg", 3d, "");
         var recipeDTO = new RestRecipeDTO("omelette", Set.of(ingredientDTO),40, "description", true, false, false, "www.zdj.pl");
-        String requestBody = STR."""
-                {
-                    "name":"\{recipeDTO.name()}",
-                    "ingredients":
-                        [
-                            {
-                            "name":"\{ingredientDTO.name()}",
-                            "amount":\{ingredientDTO.amount()},
-                            "unit":"\{ingredientDTO.unit()}"
-                            }
-                        ],
-                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
-                    "instructions": "\{recipeDTO.instructions()}",
-                    "vegetarian": \{recipeDTO.vegetarian()},
-                    "vegan": \{recipeDTO.vegan()},
-                    "glutenFree": \{recipeDTO.glutenFree()},
-                    "image": "\{recipeDTO.image()}"
-                }
-                """;
+//        String requestBody = STR."""
+//                {
+//                    "name":"\{recipeDTO.name()}",
+//                    "ingredients":
+//                        [
+//                            {
+//                            "name":"\{ingredientDTO.name()}",
+//                            "amount":\{ingredientDTO.amount()},
+//                            "unit":"\{ingredientDTO.unit()}"
+//                            }
+//                        ],
+//                    "readyInMinutes":\{recipeDTO.readyInMinutes()},
+//                    "instructions": "\{recipeDTO.instructions()}",
+//                    "vegetarian": \{recipeDTO.vegetarian()},
+//                    "vegan": \{recipeDTO.vegan()},
+//                    "glutenFree": \{recipeDTO.glutenFree()},
+//                    "image": "\{recipeDTO.image()}"
+//                }
+//                """;
 
         //when
         Mockito.when(catalog.addRecipe(recipeDTO.toCreateCommand(), "user"))
@@ -151,7 +155,7 @@ public class CatalogAddRecipeTest {
         //then
         mockMvc.perform(post("/catalog")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(requestBody)
+                        .content(objectMapper.writeValueAsString(recipeDTO))
                 )
                 .andExpect(status().isBadRequest())
                 .andExpect(result -> assertEquals("400 BAD_REQUEST \"Recipe with provided name: omelette already exist\"", result.getResolvedException().getMessage()));
