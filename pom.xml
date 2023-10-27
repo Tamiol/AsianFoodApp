@@ -14,7 +14,7 @@
     <name>AsianFoodApp</name>
     <description>AsianFoodApp</description>
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <projectlombok.version>1.18.30</projectlombok.version>
         <testcontainers.version>1.18.3</testcontainers.version>
         <testcontainers.junit-jupiter.version>1.18.3</testcontainers.junit-jupiter.version>
@@ -137,16 +137,10 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
+                <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <argLine>--enable-preview</argLine>
                 </configuration>
             </plugin>
         </plugins>

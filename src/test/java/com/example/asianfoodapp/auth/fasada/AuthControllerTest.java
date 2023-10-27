@@ -17,9 +17,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import org.springframework.test.annotation.DirtiesContext;
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class AuthControllerTest extends BaseIT {
 
     @Autowired
