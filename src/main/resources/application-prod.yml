@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://${POSTGRESQLHOST}:${POSTGRESQLPORT}/${POSTGRESQLDATABASE}
+    url: jdbc:postgresql://${POSTGRESQLHOST}/${POSTGRESQLDATABASE}
     username: ${POSTGRESQLUSER}
     password: ${POSTGRESQLPASSWORD}
     name: asianfood
