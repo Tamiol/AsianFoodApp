@@ -1,4 +1,4 @@
-package com.example.asianfoodapp.catalog.fasada;
+package com.example.asianfoodapp.catalog.facade;
 
 import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.domain.Ingredient;
@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 @SpringBootTest
 class CatalogControllerTest {
 

@@ -1,4 +1,4 @@
-package com.example.asianfoodapp.catalog.fasada;
+package com.example.asianfoodapp.catalog.facade;
 
 import com.example.asianfoodapp.auth.repository.UserRepository;
 import com.example.asianfoodapp.catalog.domain.Recipe;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @AutoConfigureMockMvc
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("dev")
 public class CatalogAddRecipeTest {
 
     @Autowired

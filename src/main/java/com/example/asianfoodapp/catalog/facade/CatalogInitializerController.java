@@ -1,4 +1,4 @@
-package com.example.asianfoodapp.catalog.fasada;
+package com.example.asianfoodapp.catalog.facade;
 
 import com.example.asianfoodapp.catalog.services.port.CatalogInitializerUseCase;
 import jakarta.validation.constraints.Min;
