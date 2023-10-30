@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Set;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@ActiveProfiles("test")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class RecipeJpaRepositoryTest extends BaseIT {
 

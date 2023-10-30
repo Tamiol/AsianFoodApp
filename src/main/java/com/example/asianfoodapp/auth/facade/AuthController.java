@@ -1,8 +1,7 @@
-package com.example.asianfoodapp.auth.fasada;
+package com.example.asianfoodapp.auth.facade;
 
 import com.example.asianfoodapp.auth.domain.AuthResponse;
 import com.example.asianfoodapp.auth.domain.Code;
-import com.example.asianfoodapp.auth.domain.User;
 import com.example.asianfoodapp.auth.domain.dto.UserLoginDTO;
 import com.example.asianfoodapp.auth.domain.dto.UserRegisterDTO;
 import com.example.asianfoodapp.auth.services.UserService;
